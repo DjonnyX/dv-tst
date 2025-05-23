@@ -1,0 +1,19 @@
+.page {
+    height: 100vh;
+    background-color: rgb(126, 48, 48);
+}
+
+.container {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+}
+
+.not-found {
+    text-align: center;
+    font-size: 32px;
+    font-weight: 800;
+    color: #e4bebe;
+}

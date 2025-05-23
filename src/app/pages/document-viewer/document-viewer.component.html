@@ -1,0 +1,11 @@
+<div class="page">
+    <div class="container">
+        <div class="loading-indicator" *ngIf="isLoading$ | async; else doc">
+            <dv-spinner />
+        </div>
+
+        <ng-template #doc>
+            <dv-document-viewer-widget [document]="document$ | async" />
+        </ng-template>
+    </div>
+</div>

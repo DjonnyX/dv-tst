@@ -1,0 +1,23 @@
+<div class="wrapper" #host>
+    <dv-scroll-bar [scrollSize]="(metriks$ | async)?.scrollWidth ?? 0"
+        [enabled]="(metriks$ | async)?.enabledScrollX ?? false" [size]="(bounds$ | async)?.width ?? 0"
+        (scroll)="onScrollBarHScrollHandler($event)"></dv-scroll-bar>
+    <div class="container">
+        <dv-scroll-bar [scrollSize]="(metriks$ | async)?.scrollHeight ?? 0"
+            [enabled]="(metriks$ | async)?.enabledScrollY ?? false" [size]="(bounds$ | async)?.height ?? 0"
+            (scroll)="onScrollBarVScrollHandler($event)" direction="vertical"></dv-scroll-bar>
+        <div class="viewport">
+            <div class="canvas-container">
+                <canvas #canvas class="canvas"></canvas>
+
+                <div class="zoom">
+                    <p>{{zoom}}</p>
+                    <div class="controls">
+                        <button (click)="onZoomOutHandler()">-</button>
+                        <button (click)="onZoomInHandler()">+</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

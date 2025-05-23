@@ -1,0 +1,16 @@
+.list {
+    list-style: none;
+    display: flex;
+    justify-content: center;
+    padding: 0;
+    overflow: auto;
+    scroll-behavior: smooth;
+
+    .item {
+        display: inline;
+
+        &:not(:last-child) {
+            margin-right: 3px;
+        }
+    }
+}

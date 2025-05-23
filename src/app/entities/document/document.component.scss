@@ -1,0 +1,29 @@
+.page {
+    height: 100vh;
+    background-color: rgb(27, 27, 27);
+    overflow: hidden;
+}
+
+.container {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+}
+
+.caption {
+    text-align: center;
+    font-size: 24px;
+    font-weight: 600;
+    color: #979797;
+    margin-top: 0;
+    margin-bottom: 4px;
+}
+
+.prompt {
+    text-align: center;
+    font-size: 12px;
+    font-weight: 500;
+    color: #696969;
+}

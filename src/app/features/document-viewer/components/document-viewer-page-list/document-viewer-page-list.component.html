@@ -1,0 +1,5 @@
+<ul class="list">
+    <li class="item" *ngFor="let page of pages" (click)="onClickHandler(page.number)">
+        <dv-document-viewer-page-list-page [number]="page.number" [selected]="page.number === selected" />
+    </li>
+</ul>

@@ -1,0 +1,6 @@
+<div class="track" *ngIf="enabled" [class.vertical]="direction === 'vertical'">
+    <div class="thumb"
+        [ngStyle]="{'width.px': direction === 'vertical' ? 6 : scrollSize * size, 'height.px': direction === 'vertical' ? scrollSize * size : 6}"
+        [cdkDragLockAxis]="direction === 'vertical'?'y':'x'" cdkDragBoundary=".track" cdkDrag
+        (cdkDragMoved)="onMoveHandler($event)"></div>
+</div>
