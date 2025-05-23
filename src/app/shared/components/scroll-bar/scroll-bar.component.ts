@@ -13,8 +13,17 @@ export class ScrollBarComponent implements AfterViewInit, OnDestroy {
   @Input()
   size: number = 0;
 
+private _enabled: boolean = false;
   @Input()
-  enabled: boolean = false;
+  set enabled(v: boolean) {
+    if (this._enabled === v) {
+      return;
+    }
+    this._enabled = v;
+  }
+  get enabled() {
+    return this._enabled;
+  }
 
   @Input()
   direction: ScrollBarDirection | string = ScrollBarDirection.HORIZONTAL;

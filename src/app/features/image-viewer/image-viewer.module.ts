@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ImageViewerComponent } from './image-viewer.component';
 import { ScrollBarModule } from '@shared/components/scroll-bar/scroll-bar.module';
+import { AnotationModule } from "../../entities/anotation/anotation.module";
 
 
 
@@ -10,7 +11,8 @@ import { ScrollBarModule } from '@shared/components/scroll-bar/scroll-bar.module
   exports: [ImageViewerComponent],
   imports: [
     CommonModule,
-    ScrollBarModule
+    ScrollBarModule,
+    AnotationModule,
   ]
 })
 export class ImageViewerModule { }

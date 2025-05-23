@@ -1,0 +1,13 @@
+<div class="anotation">
+    <div class="controls">
+        <button class="close-button" (click)="onDeleteHandler()">Х</button>
+    </div>
+    <p class="description" *ngIf="contentType === 'text'; else image">{{data}}</p>
+
+    <ng-template #image>
+        <img *ngIf="data !== undefined; else emptyImage" [src]="data" />
+        <ng-template #emptyImage>
+            <dv-image-empty></dv-image-empty>
+        </ng-template>
+    </ng-template>
+</div>

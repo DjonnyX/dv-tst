@@ -1,0 +1,39 @@
+.anotation {
+    background-color: #e6e6e6;
+    padding: 6px 8px;
+    border: 3px;
+
+    .controls {
+        .close-button {
+            cursor: pointer;
+            border: medium none;
+            border-spacing: 0;
+            border-radius: 2px;
+            color: #493030;
+            background-color: transparent;
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 16px;
+            font-weight: 600;
+            line-height: 1.42rem;
+            list-style: none outside none;
+            margin: 0;
+            padding: 0;
+            text-align: center;
+            text-decoration: none;
+            text-indent: 0;
+
+            width: 32px;
+            height: 32px;
+        }
+    }
+
+    .description {
+        width: 100%;
+        text-align: left;
+        color: #494949;
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 16px;
+        font-weight: 800;
+        margin: 0 0 8px 0;
+    }
+}
