@@ -16,6 +16,7 @@
 - Перемещение анотации не сопровождается анимацией передвижения. Необходима доработка обработчиков `cdkDrag`.
 
 Известные улучшения:
+- Удобство. Для повышения качества `UX`, желательно реализовать события скролла области вьюпорта колесом мыши и поддержать использование тачпада при навигации вьюпорта. В добавок поддержку навигации вьюпорта мобильными устройствами `[Корректная обработка touch-событий]`.
 - Безопасность. Для получения манифеста желательно использовать схему валидации для `DTO`.
 - Рефакторинг. Для улучшенного переиспользования кода, можно вынести некоторый функционал в отдельные дерективы, такие как `autocomplite`, `clickOutside` и т.п.
 - Стили. Вынести стили в `shared` модуль для переиспользуемых элементов `UI`. Добавить миксины на повторяющиеся блоки `scss`.
@@ -24,62 +25,60 @@
 
 _P.S.: Основным упором было продемонстрировать концепцию гибридного рендеринга вьюпорта. Известные проблемы и возможные улучшения оставил, чтобы не выходить за рамки тестового задания `[не влияет на демонстрацию основного флоу задания]`._
 
-## Development 
+## Разработка 
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 19.2.3.
+Проект сгенерирован с использованием [Angular CLI](https://github.com/angular/angular-cli) version 19.2.3.
 
-## Development server
+- Режим мок-данных доступен в режиме разработке^
+```bash
+ng serve
+```
 
-To start a local development server, run:
+- Для `prod` сборки приложения на моках нужно в `environment.ts` выставить следущее:
+
+```ts
+export const environment = {
+    production: true,
+    useMock: true, // Переключает имплементацию сервиса получения данных на моки
+};
+```
+
+## Development сервер
+
+Для запуска локального dev-сервера, запустить:
 
 ```bash
 ng serve
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+Сервер запустится, перейдите по адресу `http://localhost:4200/`. Приложение будет автоматически перезапускаться при внесении некоторых изменений в файлы и ресурсы проекта.
 
-## Code scaffolding
+## Кодогенерация
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+Angular CLI включает мощные средства кодогенерации. Для генерации нового компонента, запустите:
 
 ```bash
 ng generate component component-name
 ```
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+Для полного списка доступных схем (таких как `components`, `directives`, или `pipes`), запустите:
 
 ```bash
 ng generate --help
 ```
 
-## Building
+## Сборка
 
-To build the project run:
+Для сборки проекта, запустите:
 
 ```bash
 ng build
 ```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+Это скомпилирует проект и сложет файлы собранного проекта в директорию `dist/`. По-умолчанию `production` сборка оптимизирует производительность и скорость приложения.
 
-## Running unit tests
+e2e тесты по-умолчанию отключены.
 
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
-
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
+## Дополнительные ресурсы
 
 For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
