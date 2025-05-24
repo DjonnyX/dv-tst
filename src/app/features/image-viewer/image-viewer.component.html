@@ -1,25 +1,29 @@
 <div class="wrapper" #host>
-    <dv-scroll-bar #scrollbarX class="scrollbar" [scrollSize]="(metriks$ | async)?.scrollWidth ?? 0"
-        [enabled]="(metriks$ | async)?.enabledScrollX ?? false" [size]="(bounds$ | async)?.width ?? 0"
-        (scroll)="onScrollBarHScrollHandler($event)"></dv-scroll-bar>
-    <div class="container">
-        <dv-scroll-bar #scrollbarY class="scrollbar" [scrollSize]="(metriks$ | async)?.scrollHeight ?? 0"
-            [enabled]="(metriks$ | async)?.enabledScrollY ?? false" [size]="(bounds$ | async)?.height ?? 0"
-            (scroll)="onScrollBarVScrollHandler($event)" direction="vertical"></dv-scroll-bar>
-        <div class="viewport">
-            <div class="canvas-container">
-                <canvas #canvas class="canvas" (click)="onClickToCanvasHandler($event)"></canvas>
-                <div #overlay class="overlay">
-                    <dv-anotations *ngIf="!!contentBounds" [zoom]="scale" [contentBounds]="contentBounds"></dv-anotations>
-                </div>
-                <div class="zoom">
-                    <p>{{zoom}}</p>
-                    <div class="controls">
-                        <button (click)="onZoomOutHandler()">-</button>
-                        <button (click)="onZoomInHandler()">+</button>
+    @let metriks = metriks$ | async;
+    <ng-container>
+        <dv-scroll-bar #scrollbarX class="scrollbar" [scrollSize]="metriks?.scrollWidth ?? 0"
+            [enabled]="metriks?.enabledScrollX ?? false" [size]="(bounds$ | async)?.width ?? 0"
+            (scroll)="onScrollBarHScrollHandler($event)"></dv-scroll-bar>
+        <div class="container">
+            <dv-scroll-bar #scrollbarY class="scrollbar" [scrollSize]="metriks?.scrollHeight ?? 0"
+                [enabled]="metriks?.enabledScrollY ?? false" [size]="(bounds$ | async)?.height ?? 0"
+                (scroll)="onScrollBarVScrollHandler($event)" direction="vertical"></dv-scroll-bar>
+            <div class="viewport">
+                <div class="canvas-container">
+                    <canvas #canvas class="canvas" (click)="onClickToCanvasHandler($event)"></canvas>
+                    <div #overlay class="overlay">
+                        <dv-anotations *ngIf="!!contentBounds" [zoom]="scale"
+                            [contentBounds]="contentBounds"></dv-anotations>
+                    </div>
+                    <div class="zoom">
+                        <p>{{zoom}}</p>
+                        <div class="controls">
+                            <button (click)="onZoomOutHandler()">-</button>
+                            <button (click)="onZoomInHandler()">+</button>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
+    </ng-container>
 </div>

@@ -5,7 +5,7 @@ import { IAnotation } from '@entities/document-viewer/models';
 import { AnotationContentType } from '@entities/document-viewer/enums';
 import { COLORS } from '@entities/anotation/const';
 import { IRectangle } from './models';
-import { CdkDragEnd, CdkDragEnter } from '@angular/cdk/drag-drop';
+import { CdkDragEnd } from '@angular/cdk/drag-drop';
 
 @Component({
   selector: 'dv-anotations',
@@ -120,8 +120,6 @@ export class AnotationsComponent {
       if (!data) {
         return;
       }
-
-      this.anotations = [...this.anotations];
 
       this.anotations[index] = {
         ...data,

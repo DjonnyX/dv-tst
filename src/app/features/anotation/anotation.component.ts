@@ -1,8 +1,6 @@
-import { CdkDragDrop, CdkDragEnd } from '@angular/cdk/drag-drop';
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, Output } from '@angular/core';
 import { AnotationMode } from '@entities/anotation/enums';
 import { IAnotation } from '@entities/document-viewer/models';
-import { IRectangle } from '@features/anotations/models';
 
 @Component({
   selector: 'dv-anotation',

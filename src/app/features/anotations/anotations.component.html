@@ -1,9 +1,13 @@
 <div class="container" [ngStyle]="{'width.px': contentBounds.width, 'height.px': contentBounds.height}">
-    <dv-anotation *ngFor="let anotation of anotations; let index = index" [color]="getColor(index)" [zoom]="zoom"
-        [data]="anotation" (delete)="onDeleteHandler(index, $event)" (cdkDragEnded)="onDropHandler(index, $event)"
-        cdkDragBoundary=".container" cdkDrag></dv-anotation>
+    <ng-container *ngFor="let anotation of anotations; let index = index">
+        <dv-anotation class="anotation" [color]="getColor(index)" [zoom]="zoom" [data]="anotation"
+            (delete)="onDeleteHandler(index, $event)" (cdkDragEnded)="onDropHandler(index, $event)"
+            cdkDrag></dv-anotation>
+    </ng-container>
 
-    <dv-anotation *ngIf="newAnotation" mode="new" [color]="getColor(anotations.length)" [zoom]="zoom"
-        [data]="newAnotation" (create)="onCreateHandler($event)" (delete)="onDeleteNewAnotationHandler()"
-        (cdkDragEnded)="onDropHandler(-1, $event)" cdkDragBoundary=".container" cdkDrag></dv-anotation>
+    <ng-container *ngIf="newAnotation">
+        <dv-anotation class="anotation" mode="new" [color]="getColor(anotations.length)" [zoom]="zoom"
+            [data]="newAnotation" (create)="onCreateHandler($event)" (delete)="onDeleteNewAnotationHandler()"
+            (cdkDragEnded)="onDropHandler(-1, $event);" cdkDrag></dv-anotation>
+    </ng-container>
 </div>
