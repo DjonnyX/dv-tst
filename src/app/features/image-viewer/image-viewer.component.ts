@@ -86,8 +86,8 @@ export class ImageViewerComponent implements AfterViewInit, OnDestroy {
       const w = this.host.nativeElement.offsetWidth ?? 0, h = this.host.nativeElement.offsetHeight ?? 0,
         scrollWidthLength = (w - this._image.width * this._scale),
         scrollHeightLength = (h - this._image.height * this._scale),
-        px = event.layerX - scrollWidthLength * this._posX,
-        py = event.layerY - scrollHeightLength * this._posY;
+        px = (event.layerX - scrollWidthLength * this._posX) / this._scale,
+        py = (event.layerY - scrollHeightLength * this._posY) / this._scale;
 
       this._createAnotation(px, py);
     }

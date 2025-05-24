@@ -53,6 +53,14 @@ export class AnotationsComponent {
     });
   }
 
+  onCreateHandler(anotation: IAnotation) {
+    this._service.create(anotation);
+
+    this.newAnotation = null;
+
+    this._cdr.markForCheck();
+  }
+
   onDeleteHandler(index: number, anotation: IAnotation) {
     this._service.delete(index, anotation);
   }

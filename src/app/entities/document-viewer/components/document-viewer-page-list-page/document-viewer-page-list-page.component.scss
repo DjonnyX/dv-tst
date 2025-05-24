@@ -5,15 +5,15 @@
     justify-content: center;
     min-width: 32px;
     min-height: 32px;
-    background-color: rgb(47, 47, 47);
+    background-color: rgb(42 45 53);
     border-radius: 2px;
     padding: 4px 2px;
-    color: #979797;
+    color: #969eb5;
     font-size: 12px;
     font-weight: 800;
 
     &.selected {
         background-color: rgb(68, 71, 83);
-        color: #979797;
+        color: #969eb5;
     }
 }

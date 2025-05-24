@@ -1,4 +1,4 @@
 <div class="container" [ngStyle]="{'left.px': data.x * zoom, 'top.px': data.y * zoom}">
-    <dv-anotation-entity [data]="data.data" [contentType]="data.contentType"
+    <dv-anotation-entity [mode]="mode" [data]="data.data" [contentType]="data.contentType" (create)="onCreateHandler($event)"
         (delete)="onDeleteHandler()"></dv-anotation-entity>
 </div>

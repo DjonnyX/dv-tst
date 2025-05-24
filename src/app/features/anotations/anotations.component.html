@@ -2,6 +2,6 @@
     <dv-anotation *ngFor="let anotation of anotations; let index = index" [zoom]="zoom" [data]="anotation"
         (delete)="onDeleteHandler(index, $event)"></dv-anotation>
 
-    <dv-anotation *ngIf="newAnotation" [zoom]="zoom" [data]="newAnotation"
+    <dv-anotation *ngIf="newAnotation" mode="new" [zoom]="zoom" [data]="newAnotation" (create)="onCreateHandler($event)"
         (delete)="onDeleteNewAnotationHandler()"></dv-anotation>
 </div>

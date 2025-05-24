@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, Output } from '@angular/core';
+import { AnotationMode } from '@entities/anotation/enums';
 import { IAnotation } from '@entities/document-viewer/models';
 
 @Component({
@@ -9,6 +10,21 @@ import { IAnotation } from '@entities/document-viewer/models';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AnotationComponent {
+  private _mode: AnotationMode | string = AnotationMode.SAVED;
+  @Input()
+  set mode(v: AnotationMode | string) {
+    if (this._mode === v) {
+      return;
+    }
+
+    this._mode = v;
+
+    this._cdr.markForCheck();
+  }
+  get mode() {
+    return this._mode;
+  }
+
   private _data!: IAnotation;
   @Input()
   set data(v: IAnotation) {
@@ -40,9 +56,20 @@ export class AnotationComponent {
   }
 
   @Output()
+  create = new EventEmitter<IAnotation>();
+
+  @Output()
   delete = new EventEmitter<IAnotation>();
 
   constructor(private _cdr: ChangeDetectorRef) { }
+
+  onCreateHandler(data: Omit<IAnotation, 'x' | 'y'>) {
+    this.create.emit({
+      x: this._data.x,
+      y: this._data.y,
+      ...data,
+    })
+  }
 
   onDeleteHandler() {
     this.delete.emit(this._data);

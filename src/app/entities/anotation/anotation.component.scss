@@ -1,10 +1,15 @@
 .anotation {
     background-color: #e6e6e6;
     padding: 6px 8px;
-    border: 3px;
+    border-radius: 7px;
+    border-top-left-radius: 0;
+    box-shadow: 1px 3px 3px -1px rgba(0, 0, 0, 0.2);
 
     .controls {
-        .close-button {
+        display: flex;
+
+        .close-button,
+        .create-button {
             cursor: pointer;
             border: medium none;
             border-spacing: 0;
@@ -21,9 +26,16 @@
             text-align: center;
             text-decoration: none;
             text-indent: 0;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
 
-            width: 32px;
-            height: 32px;
+            width: 24px;
+            height: 24px;
+
+            &:not(:last-child) {
+                margin-right: 0;
+            }
         }
     }
 
