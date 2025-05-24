@@ -11,9 +11,6 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
   styleUrl: './document-viewer.component.scss'
 })
 export class DocumentViewerComponent implements OnInit {
-  @Input()
-  document: IDocumentModel | null | undefined;
-
   private _pageNumber$ = new BehaviorSubject<number | undefined>(undefined);
   pageNumber$ = this._pageNumber$.asObservable();
 
@@ -22,6 +19,27 @@ export class DocumentViewerComponent implements OnInit {
 
   private _isLoading$ = new BehaviorSubject<boolean>(false);
   isLoading$ = this._isLoading$.asObservable();
+
+  private _document: IDocumentModel | null | undefined;
+  @Input()
+  set document(v: IDocumentModel | null | undefined) {
+    if (this._document === v) {
+      return;
+    }
+
+    this._document = v;
+
+    if (Array.isArray(this.document?.pages) && this.document.pages.length > 0) {
+      const number = this.document.pages[0].number;
+
+      this._pageNumber$.next(number);
+
+      this.select.emit(number);
+    }
+  }
+  get document() {
+    return this._document;
+  }
 
   @Output()
   select = new EventEmitter<number>();

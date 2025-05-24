@@ -13,13 +13,15 @@ export class DocumentViewerPageListComponent {
   pages: Array<IDocumentPageModel> | undefined;
 
   @Input()
-  selected: number | undefined;
+  selected: number | null | undefined;
 
   @Output()
   select = new EventEmitter<number>();
 
   onClickHandler(number: number) {
     this.selected = number;
+
+    this.pages = [...(this.pages || [])];
 
     this.select.emit(number);
   }
