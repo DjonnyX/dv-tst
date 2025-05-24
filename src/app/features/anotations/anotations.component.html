@@ -1,13 +1,13 @@
 <div class="container" [ngStyle]="{'width.px': contentBounds.width, 'height.px': contentBounds.height}">
     <ng-container *ngFor="let anotation of anotations; let index = index">
-        <dv-anotation class="anotation" [color]="getColor(index)" [zoom]="zoom" [data]="anotation"
+        <dv-anotation class="anotation" [index]="index" [color]="getColor(index)" [zoom]="zoom" [data]="anotation"
             (edit)="onEditHandler(index, $event)" (delete)="onDeleteHandler(index, $event)"
             (cdkDragEnded)="onDropHandler(index, $event)" cdkDrag></dv-anotation>
     </ng-container>
 
     <ng-container *ngIf="newAnotation">
         <dv-anotation class="anotation" mode="new" [color]="getColor(anotations.length)" [zoom]="zoom"
-            [data]="newAnotation" (create)="onCreateHandler($event)" (edit)="onEditHandler(-1, $event)"
+            [data]="newAnotation" (create)="onCreateHandler(-1, $event)" (edit)="onEditHandler(-1, $event)"
             (delete)="onDeleteNewAnotationHandler()" (cdkDragEnded)="onDropHandler(-1, $event);" cdkDrag></dv-anotation>
     </ng-container>
 </div>

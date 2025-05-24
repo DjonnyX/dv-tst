@@ -6,6 +6,7 @@ import { AnotationContentType } from '@entities/document-viewer/enums';
 import { COLORS } from '@entities/anotation/const';
 import { IRectangle } from './models';
 import { CdkDragEnd } from '@angular/cdk/drag-drop';
+import { AnotationMode } from '@entities/anotation/enums';
 
 @Component({
   selector: 'dv-anotations',
@@ -85,8 +86,18 @@ export class AnotationsComponent {
     return COLORS[i];
   }
 
-  onCreateHandler(anotation: IAnotation) {
-    this._service.create(anotation);
+  onCreateHandler(index: number, anotation: IAnotation) {
+    if (index === -1) {
+      this._service.create({
+        ...this.newAnotation,
+        ...anotation,
+      });
+    } else {
+      this._service.create({
+        ...this.anotations[index],
+        ...anotation,
+      });
+    }
 
     this.newAnotation = null;
 

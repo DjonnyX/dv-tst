@@ -12,6 +12,9 @@ export class AnotationsService {
   private _add$ = new Subject<IPoint>();
   add$ = this._add$.asObservable();
 
+  private _edit$ = new Subject<{ index: number, anotation: IAnotation }>();
+  edit$ = this._edit$.asObservable();
+
   private _show$ = new Subject<Array<IAnotation>>();
   show$ = this._show$.asObservable();
 
@@ -38,10 +41,20 @@ export class AnotationsService {
   }
 
   edit(index: number, anotation: IAnotation) {
-    this._queue.splice(index, 1);
-    this._queue.splice(index, 0, anotation);
+    if (index === -1) {
+      this.create(anotation);
 
-    this._show$.next(this._queue);
+      const i = this._queue.length - 1, a = this._queue[this._queue.length - 1];
+
+      setTimeout(() => {
+        this._edit$.next({ index: i, anotation: a });
+      });
+    } else {
+      this._queue.splice(index, 1);
+      this._queue.splice(index, 0, anotation);
+
+      this._show$.next(this._queue);
+    }
   }
 
   create(anotation: IAnotation) {

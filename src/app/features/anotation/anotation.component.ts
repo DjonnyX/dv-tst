@@ -10,6 +10,9 @@ import { IAnotation } from '@entities/document-viewer/models';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AnotationComponent implements OnInit {
+  @Input()
+  index: number = -1;
+
   private _mode: AnotationMode | string = AnotationMode.SAVED;
   @Input()
   set mode(v: AnotationMode | string) {
@@ -94,7 +97,7 @@ export class AnotationComponent implements OnInit {
   @Output()
   delete = new EventEmitter<IAnotation>();
 
-  constructor(private _cdr: ChangeDetectorRef) { }
+  constructor(private _cdr: ChangeDetectorRef) {}
 
   ngOnInit() {
     this.isEdit = this._mode === AnotationMode.NEW;

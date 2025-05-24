@@ -13,6 +13,8 @@ import { ITab, ITabSelect } from '@shared/tabbar/models';
   styleUrl: './anotations-editor.component.scss'
 })
 export class AnotationsEditorComponent {
+  @Input() index = -1;
+
   @Input() mode: AnotationMode | string = AnotationMode.SAVED;
 
   private _contentType: AnotationContentType = AnotationContentType.TEXT;
