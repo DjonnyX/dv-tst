@@ -19,7 +19,7 @@ export class AnotationComponent {
 
   @Input() contentType: AnotationContentType = AnotationContentType.TEXT;
 
-  @Input() data: string | undefined;
+  @Input() data: string | null | undefined;
 
   @Input() color: string = COLORS[0];
 
@@ -38,7 +38,11 @@ export class AnotationComponent {
     });
   }
 
-  onEditHandler() {
+  onEditHandler(e?: Event) {
+    if (e) {
+      e.stopImmediatePropagation();
+    }
+
     this.edit.emit(this.contentType);
   }
 

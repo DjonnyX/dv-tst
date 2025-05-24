@@ -12,6 +12,6 @@ import { ImageEmptyModule } from '@entities/image-empty/image-empty.module';
   imports: [
     CommonModule,
     ImageEmptyModule,
-  ]
+  ],
 })
 export class AnotationModule { }

@@ -11,10 +11,11 @@ export class TabbarComponent {
   @Input()
   items: Array<ITab> | null | undefined;
 
+  @Input()
+  selectedIndex: number = 0;
+
   @Output()
   select = new EventEmitter<ITabSelect>();
-
-  selectedIndex: number = 0;
 
   onSelectHandler(e: MouseEvent, index: number, item: ITab) {
     e.stopImmediatePropagation();

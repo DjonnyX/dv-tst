@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, EventEmitter, Input, Output, ViewChild } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, EventEmitter, Input, Output, ViewChild } from '@angular/core';
 import { COLORS } from '@entities/anotation/const';
 import { TABS } from '@entities/anotation/const/tabs';
 import { AnotationMode } from '@entities/anotation/enums';
@@ -6,11 +6,14 @@ import { AnotationContentType } from '@entities/document-viewer/enums';
 import { IAnotation } from '@entities/document-viewer/models';
 import { ITab, ITabSelect } from '@shared/tabbar/models';
 
+const BASE64_IMG_PREFIX = "data:image/png;base64";
+
 @Component({
   selector: 'dv-anotations-editor',
   standalone: false,
   templateUrl: './anotations-editor.component.html',
-  styleUrl: './anotations-editor.component.scss'
+  styleUrl: './anotations-editor.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AnotationsEditorComponent implements AfterViewInit {
   @ViewChild('textarea')
@@ -28,10 +31,22 @@ export class AnotationsEditorComponent implements AfterViewInit {
     }
 
     this._contentType = v;
+
+    this._cdr.markForCheck();
   }
   get contentType() { return this._contentType; }
 
-  @Input() data: string | undefined;
+  src: string | null | undefined;
+
+  private _data: string | null | undefined;
+  @Input()
+  set data(v: string | null | undefined) {
+    if (this._data === v) {
+      return;
+    }
+
+    this._data = this.src = v;
+  }
 
   @Input() color: string = COLORS[0];
 
@@ -43,14 +58,26 @@ export class AnotationsEditorComponent implements AfterViewInit {
 
   tabs: Array<ITab> = TABS;
 
+  constructor(private _cdr: ChangeDetectorRef) { }
+
   ngAfterViewInit(): void {
     if (this.textarea) {
       this.textarea.nativeElement.focus();
     }
   }
 
+  onImageLoadedHandler(data: string | null) {
+    const anotationData = {
+      data: data, contentType: this.contentType,
+    };
+
+    this.create.emit(anotationData);
+  }
+
   onSelectTab(data: ITabSelect) {
-    this.edit.emit(data.index === 0 ? AnotationContentType.TEXT : AnotationContentType.IMAGE);
+    this.contentType = data.index === 0 ? AnotationContentType.TEXT : AnotationContentType.IMAGE;
+
+    this._cdr.detectChanges();
   }
 
   onCreateHandler() {
@@ -62,6 +89,8 @@ export class AnotationsEditorComponent implements AfterViewInit {
   }
 
   onEditingComplete() {
+    this._data = this.src;
+
     if (!this.data || this.data === '') {
       return;
     }

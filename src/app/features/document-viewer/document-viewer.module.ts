@@ -22,9 +22,10 @@ import { environment } from 'environments/environment';
     ImageViewerModule,
     SpinnerModule,
   ],
-  providers: [{
-    provide: DocumentViewerService,
-    useClass: environment.useMock ? DocumentViewerMockService : DocumentViewerImplimentationService
-  }]
+  providers: [
+    {
+      provide: DocumentViewerService,
+      useClass: environment.useMock ? DocumentViewerMockService : DocumentViewerImplimentationService
+    }]
 })
 export class DocumentViewerModule { }

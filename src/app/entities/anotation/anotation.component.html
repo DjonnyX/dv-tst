@@ -1,13 +1,15 @@
 <div class="anotation" [ngStyle]="{'background-color': color}">
     <div class="content">
         <ng-container *ngIf="contentType === 'text'; else image">
-            <p class="description" (click)="onEditHandler()">{{data}}</p>
+            <p class="description" (click)="onEditHandler($event)">{{data}}</p>
         </ng-container>
 
         <ng-template #image>
-            <img *ngIf="data !== undefined; else emptyImage" [src]="data" (click)="onEditHandler()" />
+            <div class="image" (click)="onEditHandler($event)">
+                <img *ngIf="!!data; else emptyImage" [src]="data" />
+            </div>
             <ng-template #emptyImage>
-                <dv-image-empty (click)="onEditHandler()"></dv-image-empty>
+                <dv-image-empty (click)="onEditHandler($event)"></dv-image-empty>
             </ng-template>
         </ng-template>
     </div>

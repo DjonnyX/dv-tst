@@ -1,7 +1,11 @@
 import { Injectable } from '@angular/core';
 import { IAnotation } from '@entities/document-viewer/models';
-import { Subject } from 'rxjs';
+import { map, Observable, Subject, switchMap } from 'rxjs';
 import { IPoint } from './models';
+import { HttpClient } from '@angular/common/http';
+import { byteArray2Base64 } from '@shared/utils';
+
+const BASE64_IMG_PREFIX = "data:image/png;base64";
 
 @Injectable({
   providedIn: 'root'
@@ -18,7 +22,19 @@ export class AnotationsService {
   private _show$ = new Subject<Array<IAnotation>>();
   show$ = this._show$.asObservable();
 
-  constructor() { }
+  constructor(private _http: HttpClient) { }
+
+  protected getImageAsBase64(imageUrl: string): Observable<string> {
+    return this._http.get(imageUrl, { responseType: 'arraybuffer' }).pipe(
+      switchMap(v => {
+        const byteArray = new Uint16Array(v);
+        return byteArray2Base64(byteArray);
+      }),
+      map(v => {
+        return `${BASE64_IMG_PREFIX},${v}`;
+      })
+    );
+  }
 
   load(anotations: Array<IAnotation>) {
     this._queue.splice(0);

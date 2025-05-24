@@ -16,6 +16,6 @@ import { AnotationsComponent } from '../anotations/anotations.component';
     CommonModule,
     CdkDrag,
     AnotationModule,
-  ]
+  ],
 })
 export class AnotationsModule { }

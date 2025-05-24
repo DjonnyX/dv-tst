@@ -4,6 +4,7 @@ import { AnotationsEditorComponent } from './anotations-editor.component';
 import { ImageEmptyModule } from '@entities/image-empty/image-empty.module';
 import { FormsModule } from '@angular/forms';
 import { TabbarModule } from '@shared/tabbar/tabbar.module';
+import { AnotationImageEditorModule } from '@entities/anotation-image-editor/anotation-image-editor.module';
 
 
 @NgModule({
@@ -11,9 +12,9 @@ import { TabbarModule } from '@shared/tabbar/tabbar.module';
   exports: [AnotationsEditorComponent],
   imports: [
     CommonModule,
-    ImageEmptyModule,
     FormsModule,
     TabbarModule,
+    AnotationImageEditorModule,
   ]
 })
 export class AnotationsEditorModule { }

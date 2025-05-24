@@ -1,0 +1,19 @@
+<div class="container">
+    <ng-container *ngIf="!src || error; else image">
+        <div class="image" (click)="onSelectImageHandler($event)">
+            <dv-image-empty></dv-image-empty>
+        </div>
+    </ng-container>
+
+    <ng-template #image>
+        <div *ngIf="src" class="image" (click)="onSelectImageHandler($event)">
+            <img [src]="src" (error)="onImageLoadingErrorHandler()" />
+        </div>
+    </ng-template>
+    <div class="loading-indicator" *ngIf="isLoading$ | async">
+        <dv-spinner></dv-spinner>
+    </div>
+</div>
+
+<input #imagePicker class="image-picker" type="file" accept="image/png, image/jpeg"
+    (change)="onFileSelectedHandler($event)" (cancel)="onFileSelectCanceledHandler()" />

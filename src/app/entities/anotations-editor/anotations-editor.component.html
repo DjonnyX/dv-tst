@@ -3,14 +3,11 @@
         <ng-container *ngIf="contentType === 'text'; else image">
             <textarea autofocus #textarea class="textarea"
                 placeholder="Чтобы начать редактирование, переведите поле в фокус. Чтобы завершить редактирование, выведите поле из фокуса"
-                [(ngModel)]="data" (click)="onTextAreaClickHandler($event)" (blur)="onEditingComplete()"></textarea>
+                [(ngModel)]="src" (click)="onTextAreaClickHandler($event)" (blur)="onEditingComplete()"></textarea>
         </ng-container>
 
         <ng-template #image>
-            <img *ngIf="data !== undefined; else emptyImage" [src]="data" />
-            <ng-template #emptyImage>
-                <dv-image-empty></dv-image-empty>
-            </ng-template>
+            <dv-anotation-image-editor [src]="src" (loaded)="onImageLoadedHandler($event)"></dv-anotation-image-editor>
         </ng-template>
     </div>
     <div class="controls">
@@ -21,12 +18,13 @@
                 </path>
             </svg>
         </button>
-        <button *ngIf="!!data && data !== ''" class="create-button" (click)="onEditingComplete()">
+        <button *ngIf="!!src && src !== ''" class="create-button" (click)="onEditingComplete()">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="16px" height="16px">
                 <path fill="#118325"
                     d="M53.7 20.523 28.455 50.815a1 1 0 0 1-1.438.1L10.523 36.073a1 1 0 0 1-.062-1.426l5.379-5.758a1 1 0 0 1 1.388-.071l9.194 8.018L47.166 13.26a1 1 0 0 1 1.516.017l5.018 5.962a1 1 0 0 1 0 1.284Z" />
             </svg>
         </button>
     </div>
-    <dv-tabbar [items]="tabs" (select)="onSelectTab($event)"></dv-tabbar>
+    <dv-tabbar [items]="tabs" [selectedIndex]="contentType === 'text' ? 0 : 1"
+        (select)="onSelectTab($event)"></dv-tabbar>
 </div>

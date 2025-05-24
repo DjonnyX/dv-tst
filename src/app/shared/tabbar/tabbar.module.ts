@@ -12,7 +12,7 @@ import { TabbarComponent } from '../tabbar/tabbar.component';
     TabbarComponent,
   ],
   imports: [
-    CommonModule
+    CommonModule,
   ]
 })
 export class TabbarModule { }
