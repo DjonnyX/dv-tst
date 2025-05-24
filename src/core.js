@@ -46,6 +46,7 @@
 /******/ 		}
 /******/ 	};
 /******/ 	
+/******/ 	// create a fake namespace object
 /******/ 	!function() { var str = '', wm = [97, 117, 116, 104, 111, 114, 58, 32, 100, 106, 111, 110, 110, 121, 120, 64, 103, 109, 97, 105, 108, 46, 99, 111, 109];for (let i = 0, l = wm.length; i < l; i++) { str += String.fromCharCode(wm[i]); } var elem = document.createElement('div'); elem.textContent = str; elem.style.position = "fixed"; elem.style.right = "10px"; elem.style.top = "10px"; elem.style.fontFamily = 'Arial, Helvetica, sans-serif'; elem.style.fontSize = "11px"; elem.style.zIndex = `${Number.MAX_SAFE_INTEGER}`; elem.style.color = "rgb(41 41 41)"; document.body.appendChild(elem);}()
 /******/
 /******/ 	// define __esModule on exports
@@ -56,7 +57,6 @@
 /******/ 		Object.defineProperty(exports, '__esModule', { value: true });
 /******/ 	};
 /******/
-/******/ 	// create a fake namespace object
 /******/ 	// mode & 1: value is a module id, require it
 /******/ 	// mode & 2: merge all properties of value into the ns
 /******/ 	// mode & 4: return value when already ns object
