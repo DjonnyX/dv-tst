@@ -10,7 +10,7 @@
             <div class="canvas-container">
                 <canvas #canvas class="canvas" (click)="onClickToCanvasHandler($event)"></canvas>
                 <div #overlay class="overlay">
-                    <dv-anotations [zoom]="scale"></dv-anotations>
+                    <dv-anotations *ngIf="!!contentBounds" [zoom]="scale" [contentBounds]="contentBounds"></dv-anotations>
                 </div>
                 <div class="zoom">
                     <p>{{zoom}}</p>

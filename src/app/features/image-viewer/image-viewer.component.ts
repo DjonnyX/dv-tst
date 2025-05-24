@@ -1,8 +1,10 @@
 import { AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, Input, OnDestroy, ViewChild } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, filter, map } from 'rxjs';
 import { IMetriks } from './models/metriks.model';
 import { ScrollBarComponent } from '@shared/components/scroll-bar/scroll-bar.component';
 import { AnotationsService } from '@features/anotations/anotations.service';
+import { IRectangle } from '@features/anotations/models';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 const ZOOM_STEP = .1,
   MIN_ZOOM = 0.02,
@@ -41,6 +43,8 @@ export class ImageViewerComponent implements AfterViewInit, OnDestroy {
   private _metriks$ = new BehaviorSubject<IMetriks | null>(null);
   metriks$ = this._metriks$.asObservable();
 
+  contentBounds: IRectangle | undefined;
+
   private _image: HTMLImageElement | undefined;
 
   private _posX: number = .5;
@@ -71,7 +75,22 @@ export class ImageViewerComponent implements AfterViewInit, OnDestroy {
     this._resize();
   }
 
-  constructor(private _anotationsService: AnotationsService) { }
+  constructor(private _anotationsService: AnotationsService) {
+    this._metriks$.pipe(
+      takeUntilDestroyed(),
+      filter(v => !!v),
+      map(({ scrollX, scrollY, contentWidth, contentHeight }) => {
+        return {
+          x: scrollX,
+          y: scrollY,
+          width: contentWidth,
+          height: contentHeight,
+        }
+      })
+    ).subscribe(v => {
+      this.contentBounds = v;
+    });
+  }
 
   ngAfterViewInit(): void {
     this._load();
@@ -151,6 +170,8 @@ export class ImageViewerComponent implements AfterViewInit, OnDestroy {
           top: this.host.nativeElement.offsetLeft,
           width: this.host.nativeElement.offsetWidth,
           height: this.host.nativeElement.offsetHeight,
+          contentWidth: imgWidth,
+          contentHeight: imgHeight,
           scrollX: px,
           scrollY: px,
           scrollWidth,

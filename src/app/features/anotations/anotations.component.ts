@@ -4,6 +4,8 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { IAnotation } from '@entities/document-viewer/models';
 import { AnotationContentType } from '@entities/document-viewer/enums';
 import { COLORS } from '@entities/anotation/const';
+import { IRectangle } from './models';
+import { CdkDragEnd, CdkDragEnter } from '@angular/cdk/drag-drop';
 
 @Component({
   selector: 'dv-anotations',
@@ -26,6 +28,21 @@ export class AnotationsComponent {
   }
   get zoom() {
     return this._zoom;
+  }
+
+  private _contentBounds!: IRectangle;
+  @Input()
+  set contentBounds(v: IRectangle) {
+    if (this._contentBounds === v) {
+      return;
+    }
+
+    this._contentBounds = v;
+
+    this._cdr.markForCheck();
+  }
+  get contentBounds() {
+    return this._contentBounds;
   }
 
   anotations = new Array<IAnotation>();
@@ -82,6 +99,36 @@ export class AnotationsComponent {
 
   onDeleteNewAnotationHandler() {
     this.newAnotation = null;
+
+    this._cdr.markForCheck();
+  }
+
+  onDropHandler(index: number, event: CdkDragEnd) {
+    if (index === -1) {
+      const data = this.newAnotation;
+      if (!data) {
+        return;
+      }
+
+      this.newAnotation = {
+        ...data,
+        x: data.x + event.distance.x / this._zoom,
+        y: data.y + event.distance.y / this._zoom,
+      };
+    } else {
+      const data = this.anotations[index];
+      if (!data) {
+        return;
+      }
+
+      this.anotations = [...this.anotations];
+
+      this.anotations[index] = {
+        ...data,
+        x: data.x + event.distance.x / this._zoom,
+        y: data.y + event.distance.y / this._zoom,
+      };
+    }
 
     this._cdr.markForCheck();
   }

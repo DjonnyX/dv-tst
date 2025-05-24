@@ -3,6 +3,8 @@ export interface IMetriks {
     top: number;
     width: number;
     height: number;
+    contentWidth: number;
+    contentHeight: number;
     scrollX: number;
     scrollY: number;
     scrollWidth: number;
