@@ -1,6 +1,8 @@
 # DocViewer
 ## v.0.0.1
-![doc-viewer-preview](https://github.com/user-attachments/assets/fb37c3dd-46a7-42d8-9afc-3875b90c3223)
+
+![doc-viewer-preview](https://github.com/user-attachments/assets/25c1ba49-638c-4231-8e12-5a277ea2d477)
+
 
 ЦЕЛЬЮ ВЫПОЛНЕНИЯ ЗАДАНИЯ, ЯВЛЯЕТСЯ РЕЗУЛЬТАТ РАБОТЫ ВЫПОЛНЕНИЯ ПРОГРАММЫ, ВЫПОЛНЕННОЙ В ХОДЕ ЭКСТРИМАЛЬНОГО ПРОГРАММИРОВАНИЯ!
 НЕ ПЫТАЙТЕСЬ ПОВТОРИТЬ ЭТО ДОМА:)
