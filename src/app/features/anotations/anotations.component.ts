@@ -93,6 +93,14 @@ export class AnotationsComponent {
     this._cdr.markForCheck();
   }
 
+  onEditHandler(index: number, anotation: IAnotation) {
+    this._service.edit(index, anotation);
+
+    this.newAnotation = null;
+
+    this._cdr.markForCheck();
+  }
+
   onDeleteHandler(index: number, anotation: IAnotation) {
     this._service.delete(index, anotation);
   }

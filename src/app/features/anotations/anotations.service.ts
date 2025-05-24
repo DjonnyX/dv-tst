@@ -37,6 +37,13 @@ export class AnotationsService {
     this._show$.next(this._queue);
   }
 
+  edit(index: number, anotation: IAnotation) {
+    this._queue.splice(index, 1);
+    this._queue.splice(index, 0, anotation);
+
+    this._show$.next(this._queue);
+  }
+
   create(anotation: IAnotation) {
     this._queue.push(anotation);
 

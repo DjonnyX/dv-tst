@@ -5,14 +5,14 @@
     border-top-left-radius: 0;
     box-shadow: 1px 3px 3px -1px rgba(0, 0, 0, 0.2);
     max-width: 200px;
-    max-height: 300px;
-    overflow: hidden;
+    max-height: 200px;
 
     .controls {
         display: flex;
         justify-content: end;
 
-        .delete-button {
+        .close-button,
+        .create-button {
             cursor: pointer;
             border: medium none;
             border-spacing: 0;
@@ -46,15 +46,21 @@
         padding-right: 24px;
     }
 
+    .textarea {
+        appearance: none;
+        stroke: none;
+        border-radius: 4px;
+        border-color: #ffd4a2;
+        background-color: #fff;
+    }
+
     .description {
-        cursor: text;
         width: 100%;
         text-align: left;
         color: #494949;
         font-family: Arial, Helvetica, sans-serif;
-        font-size: 12px;
-        font-weight: 600;
+        font-size: 16px;
+        font-weight: 800;
         margin: 0 0 8px 0;
-        text-overflow: ellipsis;
     }
 }

@@ -16,17 +16,15 @@ export class AnotationComponent {
   @Input() contentType: AnotationContentType = AnotationContentType.TEXT;
 
   @Input() data: string | undefined;
-  
+
   @Input() color: string = COLORS[0];
 
-  @Output() create = new EventEmitter<Omit<IAnotation, 'x' | 'y'>>();
+  @Output() edit = new EventEmitter<void>();
 
   @Output() delete = new EventEmitter<void>();
 
-  onCreateHandler() {
-    this.create.emit({
-      data: this.data, contentType: this.contentType,
-    });
+  onEditHandler() {
+    this.edit.emit();
   }
 
   onDeleteHandler() {
