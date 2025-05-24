@@ -43,6 +43,12 @@ export class AnotationsService {
     this._show$.next(this._queue);
   }
 
+  clear() {
+    this._queue.splice(0);
+
+    this._show$.next(this._queue);
+  }
+
   add(x: number, y: number) {
     this._add$.next({
       x,
@@ -77,5 +83,9 @@ export class AnotationsService {
     this._queue.push(anotation);
 
     this._show$.next(this._queue);
+  }
+
+  toArray() {
+    return [...this._queue];
   }
 }

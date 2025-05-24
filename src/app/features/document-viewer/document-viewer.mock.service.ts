@@ -34,6 +34,10 @@ export class DocumentViewerMockService extends DocumentViewerService {
     return of(null);
   }
 
+  override save(document: IDocumentModel) {
+    DOCUMENT_MOCK.pages = document.pages;
+  }
+
   private _loadMock(mock: string | any) {
     return of(mock).pipe(delay(this._getDelay()));
   }

@@ -3,6 +3,7 @@ import { IDocumentModel } from '@entities/document-viewer/models';
 import { DocumentViewerService } from './document-viewer.service';
 import { BehaviorSubject, finalize, switchMap } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { AnotationsService } from '@features/anotations/anotations.service';
 
 @Component({
   selector: 'dv-document-viewer-feature',
@@ -44,7 +45,7 @@ export class DocumentViewerComponent implements OnInit {
   @Output()
   select = new EventEmitter<number>();
 
-  constructor(private _service: DocumentViewerService, private _destroyRef: DestroyRef) { }
+  constructor(private _service: DocumentViewerService, private _anotationsService: AnotationsService, private _destroyRef: DestroyRef) { }
 
   ngOnInit(): void {
     this._pageNumber$.pipe(
@@ -61,11 +62,55 @@ export class DocumentViewerComponent implements OnInit {
     ).subscribe(img => {
       this._pageImage$.next(img);
     });
+
+    this.pageImage$.pipe(
+      takeUntilDestroyed(this._destroyRef),
+    ).subscribe(() => {
+      const number = this._pageNumber$.value;
+      if (this._document?.pages) {
+        const anotations = this._document?.pages.find(v => v.number === number)?.anotations;
+        if (Array.isArray(anotations)) {
+          this._anotationsService.load(anotations);
+        } else {
+          this._anotationsService.clear();
+        }
+      }
+    });
   }
 
   onSelectHandler(number: number) {
     this._pageNumber$.next(number);
 
     this.select.emit(number);
+  }
+
+  protected _snapshotDocument() {
+    const anotations = this._anotationsService.toArray();
+    const number = this._pageNumber$.value;
+    if (this._document?.pages) {
+      const page = this._document?.pages.find(v => v.number === number);
+      if (page && Array.isArray(anotations)) {
+        page.anotations = anotations;
+      }
+    }
+
+    return this._document;
+  }
+
+  onSaveHandler() {
+    const doc = this._snapshotDocument();
+
+    if (!doc) {
+      console.group('Saved document:');
+      console.error('Empty document');
+      console.groupEnd();
+      return;
+    }
+
+    this._service.save(doc);
+
+    console.group('Saved document:');
+    console.info(doc);
+    console.groupEnd();
   }
 }

@@ -12,4 +12,5 @@ export abstract class DocumentViewerService {
   getImageAsBase64(imageUrl: string | undefined): Observable<string | null> {
     return of(null);
   }
+  save(document: IDocumentModel) { }
 }
