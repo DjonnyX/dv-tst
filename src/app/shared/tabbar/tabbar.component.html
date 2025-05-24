@@ -1,0 +1,14 @@
+<div class="tabbar">
+    <ng-container *ngFor="let item of items; let index = index">
+        <span class="tab" [class.selected]="selectedIndex === index" (click)="onSelectHandler($event, index, item)">
+            <ng-container *ngIf="!!item.name; else icon">
+                <div class="name">
+                    {{item.name}}
+                </div>
+            </ng-container>
+            <ng-template #icon>
+                <img class="icon" [src]="item.icon" />
+            </ng-template>
+        </span>
+    </ng-container>
+</div>

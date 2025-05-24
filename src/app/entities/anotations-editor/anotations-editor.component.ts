@@ -1,8 +1,10 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { COLORS } from '@entities/anotation/const';
+import { TABS } from '@entities/anotation/const/tabs';
 import { AnotationMode } from '@entities/anotation/enums';
 import { AnotationContentType } from '@entities/document-viewer/enums';
 import { IAnotation } from '@entities/document-viewer/models';
+import { ITab, ITabSelect } from '@shared/tabbar/models';
 
 @Component({
   selector: 'dv-anotations-editor',
@@ -30,7 +32,15 @@ export class AnotationsEditorComponent {
 
   @Output() create = new EventEmitter<Omit<IAnotation, 'x' | 'y'>>();
 
+  @Output() edit = new EventEmitter<AnotationContentType>();
+
   @Output() delete = new EventEmitter<void>();
+
+  tabs: Array<ITab> = TABS;
+
+  onSelectTab(data: ITabSelect) {
+    this.edit.emit(data.index === 0 ? AnotationContentType.TEXT : AnotationContentType.IMAGE);
+  }
 
   onCreateHandler() {
     const anotationData = {

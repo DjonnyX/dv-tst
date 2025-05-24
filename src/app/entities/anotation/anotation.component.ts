@@ -1,7 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { AnotationContentType } from '../document-viewer/enums';
 import { AnotationMode } from './enums';
-import { IAnotation } from '@entities/document-viewer/models';
 import { COLORS } from './const';
 
 @Component({
@@ -19,12 +18,12 @@ export class AnotationComponent {
 
   @Input() color: string = COLORS[0];
 
-  @Output() edit = new EventEmitter<void>();
+  @Output() edit = new EventEmitter<AnotationContentType>();
 
   @Output() delete = new EventEmitter<void>();
 
   onEditHandler() {
-    this.edit.emit();
+    this.edit.emit(this.contentType);
   }
 
   onDeleteHandler() {
