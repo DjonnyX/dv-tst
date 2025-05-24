@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, EventEmitter, Input, Output, ViewChild } from '@angular/core';
 import { COLORS } from '@entities/anotation/const';
 import { TABS } from '@entities/anotation/const/tabs';
 import { AnotationMode } from '@entities/anotation/enums';
@@ -12,7 +12,10 @@ import { ITab, ITabSelect } from '@shared/tabbar/models';
   templateUrl: './anotations-editor.component.html',
   styleUrl: './anotations-editor.component.scss'
 })
-export class AnotationsEditorComponent {
+export class AnotationsEditorComponent implements AfterViewInit {
+  @ViewChild('textarea')
+  textarea: ElementRef<HTMLTextAreaElement> | undefined;
+
   @Input() index = -1;
 
   @Input() mode: AnotationMode | string = AnotationMode.SAVED;
@@ -39,6 +42,12 @@ export class AnotationsEditorComponent {
   @Output() delete = new EventEmitter<void>();
 
   tabs: Array<ITab> = TABS;
+
+  ngAfterViewInit(): void {
+    if (this.textarea) {
+      this.textarea.nativeElement.focus();
+    }
+  }
 
   onSelectTab(data: ITabSelect) {
     this.edit.emit(data.index === 0 ? AnotationContentType.TEXT : AnotationContentType.IMAGE);
