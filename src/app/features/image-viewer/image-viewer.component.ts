@@ -2,10 +2,12 @@ import { AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, Input, O
 import { BehaviorSubject } from 'rxjs';
 import { IMetriks } from './models/metriks.model';
 import { ScrollBarComponent } from '@shared/components/scroll-bar/scroll-bar.component';
+import { AnotationsService } from '@features/anotations/anotations.service';
 
 const ZOOM_STEP = .1,
   MIN_ZOOM = 0.02,
-  MAX_ZOOM = 2.0;
+  MAX_ZOOM = 2.0,
+  BASE64_IMG_PREFIX = "data:image/png;base64";
 
 @Component({
   selector: 'dv-image-viewer',
@@ -18,6 +20,9 @@ const ZOOM_STEP = .1,
 export class ImageViewerComponent implements AfterViewInit, OnDestroy {
   @ViewChild('canvas')
   canvas: ElementRef<HTMLCanvasElement> | undefined;
+
+  @ViewChild('overlay')
+  overlay: ElementRef<HTMLDivElement> | undefined;
 
   @ViewChild('host')
   host: ElementRef<HTMLDivElement> | undefined;
@@ -43,6 +48,7 @@ export class ImageViewerComponent implements AfterViewInit, OnDestroy {
   private _posY: number = .5;
 
   private _scale: number = 1;
+  get scale() { return this._scale }
   get zoom() { return `${Math.round(this._scale * 100)}%`; }
 
   private _data: string | null | undefined;
@@ -61,17 +67,83 @@ export class ImageViewerComponent implements AfterViewInit, OnDestroy {
     this._resize();
   }
 
-  private _draw() {
+  private _resizeHandler = () => {
+    this._resize();
+  }
+
+  constructor(private _anotationsService: AnotationsService) { }
+
+  ngAfterViewInit(): void {
+    this._load();
+
+    window.addEventListener('resize', this._resizeHandler);
+
+    this._resize();
+  }
+
+  onClickToCanvasHandler(event: MouseEvent) {
+    if (this.host && this._image) {
+      const w = this.host.nativeElement.offsetWidth ?? 0, h = this.host.nativeElement.offsetHeight ?? 0,
+        scrollWidthLength = (w - this._image.width * this._scale),
+        scrollHeightLength = (h - this._image.height * this._scale),
+        px = event.layerX - scrollWidthLength * this._posX,
+        py = event.layerY - scrollHeightLength * this._posY;
+
+      this._createAnotation(px, py);
+    }
+  }
+
+  onZoomOutHandler() {
+    if (this._scale > MIN_ZOOM) {
+      this._scale -= ZOOM_STEP;
+      this._posY = .5;
+
+      this._resize(false);
+    }
+  }
+
+  onZoomInHandler() {
+    if (this._scale < MAX_ZOOM) {
+      this._scale += ZOOM_STEP;
+      this._posY = .5;
+
+      this._resize(false);
+
+    }
+  }
+
+  onScrollBarHScrollHandler(position: number) {
+    this._posX = position;
+
+    this._resize(false);
+  }
+
+  onScrollBarVScrollHandler(position: number) {
+    this._posY = position;
+
+    this._resize(false);
+  }
+
+  protected _draw() {
     this.context2D = this.canvas?.nativeElement?.getContext('2d');
-    if (this.context2D && this._image) {
+    if (this.host && this.context2D && this._image) {
       const w = this.host?.nativeElement.offsetWidth ?? 0, h = this.host?.nativeElement.offsetHeight ?? 0,
         sx = (this._image.width * this._scale - w), sy = (this._image.height * this._scale - h),
         scrollWidth = 1 - sx / w, scrollHeight = 1 - sy / h, scrollWidthLength = (w - this._image.width * this._scale),
         scrollHeightLength = (h - this._image.height * this._scale),
         px = scrollWidthLength * this._posX,
-        py = scrollHeightLength * this._posY;
+        py = scrollHeightLength * this._posY,
+        imgWidth = this._image.width * this._scale,
+        imgHeight = this._image.height * this._scale;
       this.context2D.clearRect(0, 0, this.canvas?.nativeElement?.width || 0, this.canvas?.nativeElement?.height || 0);
-      this.context2D.drawImage(this._image, px, py, this._image.width * this._scale, this._image.height * this._scale);
+      this.context2D.drawImage(this._image, px, py, imgWidth, imgHeight);
+
+      if (this.overlay) {
+        this.overlay.nativeElement.style.left = `${px}px`;
+        this.overlay.nativeElement.style.top = `${py}px`;
+        this.overlay.nativeElement.style.width = `${imgWidth}px`;
+        this.overlay.nativeElement.style.height = `${imgHeight}px`;
+      }
 
       if (this.canvas && this.host) {
         const m = {
@@ -91,13 +163,9 @@ export class ImageViewerComponent implements AfterViewInit, OnDestroy {
     }
   }
 
-  private _resizeHandler = () => {
-    this._resize();
-  }
-
-  private _resize(emit = true) {
-    if (this.canvas && this._image) {
-      const w = this.host?.nativeElement.offsetWidth ?? 0, h = this.host?.nativeElement.offsetHeight ?? 0;
+  protected _resize(emit = true) {
+    if (this.host && this.canvas && this._image) {
+      const w = this.host.nativeElement.offsetWidth ?? 0, h = this.host.nativeElement.offsetHeight ?? 0;
       this.canvas.nativeElement.width = w;
       this.canvas.nativeElement.height = h;
       if (emit) {
@@ -107,59 +175,15 @@ export class ImageViewerComponent implements AfterViewInit, OnDestroy {
     }
   }
 
-  ngAfterViewInit(): void {
-    this._load();
-
-    window.addEventListener('resize', this._resizeHandler);
-
-    this._resize();
-  }
-
-  onClickToCanvasHandler(event: MouseEvent) {
-    // this.context2D = this.canvas?.nativeElement?.getContext('2d');
-    // if (this.context2D && this._image) {
-    //   const w = this.host?.nativeElement.offsetWidth ?? 0, h = this.host?.nativeElement.offsetHeight ?? 0, wr = w * this._ratio, hr = h * this._ratio;
-    //   const px = ((.5 - this._posX) * wr) + (wr - this._image.width) * .5, py = ((.5 - this._posY) * hr) + (hr - this._image.height) * .5;
-
-    //   const x = px - event.x * this._scale, y = py - event.y * this._scale;
-    //   console.log(x, y)
-    // }
-  }
-
-  onZoomOutHandler() {
-    if (this._scale > MIN_ZOOM) {
-      this._scale -= ZOOM_STEP;
-
-      this._resize();
-    }
-  }
-
-  onZoomInHandler() {
-    if (this._scale < MAX_ZOOM) {
-      this._scale += ZOOM_STEP;
-
-      this._resize();
-
-    }
-  }
-
-  onScrollBarHScrollHandler(position: number) {
-    this._posX = position;
-
-    this._resize(false);
-  }
-
-  onScrollBarVScrollHandler(position: number) {
-    this._posY = position;
-
-    this._resize(false);
+  protected _createAnotation(x: number, y: number) {
+    this._anotationsService.add(x, y);
   }
 
   protected _load() {
     if (this._data) {
       this._image = new Image();
       this._image.addEventListener('load', this._onLoadHandler);
-      this._image.src = `data:image/png;base64,${this._data}`;
+      this._image.src = `${BASE64_IMG_PREFIX},${this._data}`;
     }
   }
 

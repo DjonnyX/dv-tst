@@ -1,8 +1,8 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { AnotationContentType } from './enums';
+import { AnotationContentType } from '../document-viewer/enums';
 
 @Component({
-  selector: 'dv-anotation',
+  selector: 'dv-anotation-entity',
   standalone: false,
   templateUrl: './anotation.component.html',
   styleUrl: './anotation.component.scss'

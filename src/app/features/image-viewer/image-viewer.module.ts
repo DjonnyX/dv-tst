@@ -2,8 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ImageViewerComponent } from './image-viewer.component';
 import { ScrollBarModule } from '@shared/components/scroll-bar/scroll-bar.module';
-import { AnotationModule } from "../../entities/anotation/anotation.module";
-
+import { AnotationsModule } from '@features/anotations/anotations.module';
 
 
 @NgModule({
@@ -12,7 +11,7 @@ import { AnotationModule } from "../../entities/anotation/anotation.module";
   imports: [
     CommonModule,
     ScrollBarModule,
-    AnotationModule,
+    AnotationsModule,
   ]
 })
 export class ImageViewerModule { }
