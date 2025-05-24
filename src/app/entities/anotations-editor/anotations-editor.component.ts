@@ -47,6 +47,9 @@ export class AnotationsEditorComponent implements AfterViewInit {
 
     this._data = this.src = v;
   }
+  get data() {
+    return this._data;
+  }
 
   @Input() color: string = COLORS[0];
 
@@ -67,6 +70,8 @@ export class AnotationsEditorComponent implements AfterViewInit {
   }
 
   onImageLoadedHandler(data: string | null) {
+    this._data = this.src = data;
+
     const anotationData = {
       data: data, contentType: this.contentType,
     };
@@ -88,14 +93,24 @@ export class AnotationsEditorComponent implements AfterViewInit {
     this.create.emit(anotationData);
   }
 
-  onEditingComplete() {
+  onAutoComplete() {
+    if (this._contentType === AnotationContentType.IMAGE) {
+      return;
+    }
+
+    this.onEditingComplete();
+  }
+
+  onEditingComplete(emitOnlyText = false) {
     this._data = this.src;
 
     if (!this.data || this.data === '') {
       return;
     }
 
-    this.onCreateHandler();
+    if (!emitOnlyText || (emitOnlyText && this._contentType === AnotationContentType.TEXT)) {
+      this.onCreateHandler();
+    }
   }
 
   onDeleteHandler() {

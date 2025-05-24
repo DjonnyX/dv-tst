@@ -1,9 +1,9 @@
-<div class="anotation" [ngStyle]="{'background-color': color}" (click)="onEditingComplete()">
+<div class="anotation" [ngStyle]="{'background-color': color}" (click)="onEditingComplete(true)">
     <div class="content">
         <ng-container *ngIf="contentType === 'text'; else image">
             <textarea autofocus #textarea class="textarea"
                 placeholder="Чтобы начать редактирование, переведите поле в фокус. Чтобы завершить редактирование, выведите поле из фокуса"
-                [(ngModel)]="src" (click)="onTextAreaClickHandler($event)" (blur)="onEditingComplete()"></textarea>
+                [(ngModel)]="src" (click)="onTextAreaClickHandler($event)" (blur)="onAutoComplete()"></textarea>
         </ng-container>
 
         <ng-template #image>
