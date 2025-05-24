@@ -40,6 +40,21 @@ export class AnotationComponent {
     return this._data;
   }
 
+  private _color!: string;
+  @Input()
+  set color(v: string) {
+    if (this._color === v) {
+      return;
+    }
+
+    this._color = v;
+
+    this._cdr.markForCheck();
+  }
+  get color() {
+    return this._color;
+  }
+
   private _zoom: number = 1;
   @Input()
   set zoom(v: number) {

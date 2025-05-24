@@ -2,6 +2,7 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { AnotationContentType } from '../document-viewer/enums';
 import { AnotationMode } from './enums';
 import { IAnotation } from '@entities/document-viewer/models';
+import { COLORS } from './const';
 
 @Component({
   selector: 'dv-anotation-entity',
@@ -15,6 +16,8 @@ export class AnotationComponent {
   @Input() contentType: AnotationContentType = AnotationContentType.TEXT;
 
   @Input() data: string | undefined;
+  
+  @Input() color: string = COLORS[0];
 
   @Output() create = new EventEmitter<Omit<IAnotation, 'x' | 'y'>>();
 

@@ -3,6 +3,7 @@ import { AnotationsService } from './anotations.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { IAnotation } from '@entities/document-viewer/models';
 import { AnotationContentType } from '@entities/document-viewer/enums';
+import { COLORS } from '@entities/anotation/const';
 
 @Component({
   selector: 'dv-anotations',
@@ -51,6 +52,20 @@ export class AnotationsComponent {
 
       this._cdr.markForCheck();
     });
+  }
+
+  getColor(index: number) {
+    if (index < 0) {
+      return COLORS[0];
+    }
+
+    let i = index >= COLORS.length ? index - COLORS.length : index;
+
+    while (i >= COLORS.length) {
+      i = index - COLORS.length;
+    }
+
+    return COLORS[i];
   }
 
   onCreateHandler(anotation: IAnotation) {
