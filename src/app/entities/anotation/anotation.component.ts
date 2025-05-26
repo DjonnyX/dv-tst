@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, input, Input, output, Output } from '@angular/core';
 import { AnotationContentType } from '../document-viewer/enums';
 import { AnotationMode } from './enums';
 import { COLORS } from './const';
@@ -13,25 +13,25 @@ import { filter } from 'rxjs';
   styleUrl: './anotation.component.scss'
 })
 export class AnotationComponent {
-  @Input() index = -1;
+  index = input<number>(-1);
 
-  @Input() mode: AnotationMode | string = AnotationMode.SAVED;
+  mode = input<AnotationMode | string>(AnotationMode.SAVED);
 
-  @Input() contentType: AnotationContentType = AnotationContentType.TEXT;
+  contentType = input<AnotationContentType>(AnotationContentType.TEXT);
 
-  @Input() data: string | null | undefined;
+  data = input<string | null | undefined>(undefined);
 
-  @Input() color: string = COLORS[0];
+  color = input<string>(COLORS[0]);
 
-  @Output() edit = new EventEmitter<AnotationContentType>();
+  edit = output<AnotationContentType>();
 
-  @Output() delete = new EventEmitter<void>();
+  delete = output<void>();
 
   constructor(private _service: AnotationsService) {
     this._service.edit$.pipe(
       takeUntilDestroyed(),
       filter(v => {
-        return v.index === this.index;
+        return v.index === this.index();
       })
     ).subscribe(v => {
       this.onEditHandler();
@@ -43,7 +43,7 @@ export class AnotationComponent {
       e.stopImmediatePropagation();
     }
 
-    this.edit.emit(this.contentType);
+    this.edit.emit(this.contentType());
   }
 
   onDeleteHandler() {

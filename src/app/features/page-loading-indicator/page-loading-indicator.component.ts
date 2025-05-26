@@ -1,6 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { NavigationCancel, NavigationEnd, NavigationError, NavigationStart, Router } from '@angular/router';
-import { filter, Observable } from 'rxjs';
+import { filter, tap } from 'rxjs';
 import { IsLoadingService } from '../../shared/services/is-loading.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
@@ -11,13 +11,17 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
   styleUrl: './page-loading-indicator.component.scss'
 })
 export class PageLoadingIndicatorComponent {
-  isLoading$: Observable<boolean>;
+  isLoading = signal<boolean>(false);
 
   constructor(
     private _isLoadingService: IsLoadingService,
     private _router: Router,
   ) {
-    this.isLoading$ = this._isLoadingService.isLoading$();
+    this._isLoadingService.isLoading$().pipe(
+      tap(v => {
+        this.isLoading.set(v);
+      }),
+    );
 
     this._router.events
       .pipe(

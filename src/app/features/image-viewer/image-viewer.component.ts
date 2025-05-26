@@ -1,10 +1,8 @@
-import { AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, Input, OnDestroy, ViewChild } from '@angular/core';
-import { BehaviorSubject, filter, map } from 'rxjs';
+import { AfterViewInit, ChangeDetectionStrategy, Component, effect, ElementRef, input, OnDestroy, signal, ViewChild } from '@angular/core';
 import { IMetriks } from './models/metriks.model';
 import { ScrollBarComponent } from '@shared/components/scroll-bar/scroll-bar.component';
 import { AnotationsService } from '@features/anotations/anotations.service';
 import { IRectangle } from '@features/anotations/models';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 const ZOOM_STEP = .1,
   MIN_ZOOM = 0.02,
@@ -35,13 +33,11 @@ export class ImageViewerComponent implements AfterViewInit, OnDestroy {
   @ViewChild('scrollbarY', { read: ScrollBarComponent, static: true })
   scrollbarY: ElementRef<ScrollBarComponent> | undefined;
 
-  private _bounds$ = new BehaviorSubject<{ width: number, height: number }>({ width: 0, height: 0 });
-  bounds$ = this._bounds$.asObservable();
+  bounds = signal<{ width: number, height: number }>({ width: 0, height: 0 });
 
   context2D: CanvasRenderingContext2D | null | undefined;
 
-  private _metriks$ = new BehaviorSubject<IMetriks | null>(null);
-  metriks$ = this._metriks$.asObservable();
+  metriks = signal<IMetriks | null>(null);
 
   contentBounds: IRectangle | undefined;
 
@@ -55,17 +51,7 @@ export class ImageViewerComponent implements AfterViewInit, OnDestroy {
   get scale() { return this._scale }
   get zoom() { return `${Math.round(this._scale * 100)}%`; }
 
-  private _data: string | null | undefined;
-  @Input()
-  set data(v: string | null | undefined) {
-    if (this._data === v) {
-      return;
-    }
-
-    this._data = v;
-    this._load();
-  }
-  get data() { return this._data }
+  data = input<string | null | undefined>(undefined);
 
   private _onLoadHandler = () => {
     this._resize();
@@ -76,19 +62,25 @@ export class ImageViewerComponent implements AfterViewInit, OnDestroy {
   }
 
   constructor(private _anotationsService: AnotationsService) {
-    this._metriks$.pipe(
-      takeUntilDestroyed(),
-      filter(v => !!v),
-      map(({ scrollX, scrollY, contentWidth, contentHeight }) => {
-        return {
-          x: scrollX,
-          y: scrollY,
-          width: contentWidth,
-          height: contentHeight,
-        }
-      })
-    ).subscribe(v => {
-      this.contentBounds = v;
+    effect(() => {
+      const m = this.metriks();
+
+      if (!m) {
+        return;
+      }
+
+      const { scrollX, scrollY, contentWidth, contentHeight } = m;
+      this.contentBounds = {
+        x: scrollX,
+        y: scrollY,
+        width: contentWidth,
+        height: contentHeight,
+      };
+    });
+
+    effect(() => {
+      const d = this.data();
+      this._load(d);
     });
   }
 
@@ -179,7 +171,7 @@ export class ImageViewerComponent implements AfterViewInit, OnDestroy {
           enabledScrollX: sx > 0,
           enabledScrollY: sy > 0,
         };
-        this._metriks$.next(m);
+        this.metriks.set(m);
       }
     }
   }
@@ -190,7 +182,7 @@ export class ImageViewerComponent implements AfterViewInit, OnDestroy {
       this.canvas.nativeElement.width = w;
       this.canvas.nativeElement.height = h;
       if (emit) {
-        this._bounds$.next({ width: w, height: h });
+        this.bounds.set({ width: w, height: h });
       }
       this._draw();
     }
@@ -200,11 +192,12 @@ export class ImageViewerComponent implements AfterViewInit, OnDestroy {
     this._anotationsService.add(x, y);
   }
 
-  protected _load() {
-    if (this._data) {
+  protected _load(data?: string | null | undefined) {
+    const d = data || this.data();
+    if (d) {
       this._image = new Image();
       this._image.addEventListener('load', this._onLoadHandler);
-      this._image.src = `${BASE64_IMG_PREFIX},${this._data}`;
+      this._image.src = `${BASE64_IMG_PREFIX},${d}`;
     }
   }
 

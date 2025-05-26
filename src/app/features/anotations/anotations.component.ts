@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, input } from '@angular/core';
 import { AnotationsService } from './anotations.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { IAnotation } from '@entities/document-viewer/models';
@@ -6,7 +6,6 @@ import { AnotationContentType } from '@entities/document-viewer/enums';
 import { COLORS } from '@entities/anotation/const';
 import { IRectangle } from './models';
 import { CdkDragEnd } from '@angular/cdk/drag-drop';
-import { AnotationMode } from '@entities/anotation/enums';
 
 @Component({
   selector: 'dv-anotations',
@@ -16,35 +15,9 @@ import { AnotationMode } from '@entities/anotation/enums';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AnotationsComponent {
-  private _zoom: number = 1;
-  @Input()
-  set zoom(v: number) {
-    if (this._zoom === v) {
-      return;
-    }
+  zoom = input<number>(1);
 
-    this._zoom = v;
-
-    this._cdr.markForCheck();
-  }
-  get zoom() {
-    return this._zoom;
-  }
-
-  private _contentBounds!: IRectangle;
-  @Input()
-  set contentBounds(v: IRectangle) {
-    if (this._contentBounds === v) {
-      return;
-    }
-
-    this._contentBounds = v;
-
-    this._cdr.markForCheck();
-  }
-  get contentBounds() {
-    return this._contentBounds;
-  }
+  contentBounds = input.required<IRectangle>();
 
   anotations = new Array<IAnotation>();
 
@@ -123,6 +96,7 @@ export class AnotationsComponent {
   }
 
   onDropHandler(index: number, event: CdkDragEnd) {
+    const zoom = this.zoom();
     if (index === -1) {
       const data = this.newAnotation;
       if (!data) {
@@ -131,8 +105,8 @@ export class AnotationsComponent {
 
       this.newAnotation = {
         ...data,
-        x: data.x + event.distance.x / this._zoom,
-        y: data.y + event.distance.y / this._zoom,
+        x: data.x + event.distance.x / zoom,
+        y: data.y + event.distance.y / zoom,
       };
     } else {
       const data = this.anotations[index];
@@ -142,8 +116,8 @@ export class AnotationsComponent {
 
       this.anotations[index] = {
         ...data,
-        x: data.x + event.distance.x / this._zoom,
-        y: data.y + event.distance.y / this._zoom,
+        x: data.x + event.distance.x / zoom,
+        y: data.y + event.distance.y / zoom,
       };
     }
 

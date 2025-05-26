@@ -1,12 +1,10 @@
-import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, EventEmitter, Input, Output, ViewChild } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, effect, ElementRef, EventEmitter, input, Input, output, Output, signal, ViewChild } from '@angular/core';
 import { COLORS } from '@entities/anotation/const';
 import { TABS } from '@entities/anotation/const/tabs';
 import { AnotationMode } from '@entities/anotation/enums';
 import { AnotationContentType } from '@entities/document-viewer/enums';
 import { IAnotation } from '@entities/document-viewer/models';
 import { ITab, ITabSelect } from '@shared/tabbar/models';
-
-const BASE64_IMG_PREFIX = "data:image/png;base64";
 
 @Component({
   selector: 'dv-anotations-editor',
@@ -19,49 +17,39 @@ export class AnotationsEditorComponent implements AfterViewInit {
   @ViewChild('textarea')
   textarea: ElementRef<HTMLTextAreaElement> | undefined;
 
-  @Input() index = -1;
+  index = input<number>(-1);
 
-  @Input() mode: AnotationMode | string = AnotationMode.SAVED;
+  mode = input<AnotationMode | string>(AnotationMode.SAVED);
 
-  private _contentType: AnotationContentType = AnotationContentType.TEXT;
-  @Input()
-  set contentType(v: AnotationContentType) {
-    if (this._contentType === v) {
-      return;
-    }
-
-    this._contentType = v;
-
-    this._cdr.markForCheck();
-  }
-  get contentType() { return this._contentType; }
+  contentType = input<AnotationContentType>(AnotationContentType.TEXT);
 
   src: string | null | undefined;
 
-  private _data: string | null | undefined;
-  @Input()
-  set data(v: string | null | undefined) {
-    if (this._data === v) {
-      return;
-    }
+  data = input<string | null | undefined>(undefined);
 
-    this._data = this.src = v;
-  }
-  get data() {
-    return this._data;
-  }
+  color = input<string>(COLORS[0]);
 
-  @Input() color: string = COLORS[0];
+  create = output<Omit<IAnotation, 'x' | 'y'>>();
 
-  @Output() create = new EventEmitter<Omit<IAnotation, 'x' | 'y'>>();
+  edit = output<AnotationContentType>();
 
-  @Output() edit = new EventEmitter<AnotationContentType>();
+  delete = output<void>();
 
-  @Output() delete = new EventEmitter<void>();
+  typeOfContent = signal<AnotationContentType>(AnotationContentType.TEXT);
 
   tabs: Array<ITab> = TABS;
 
-  constructor(private _cdr: ChangeDetectorRef) { }
+  constructor(private _cdr: ChangeDetectorRef) {
+    effect(() => {
+      const contentType = this.contentType();
+      this.typeOfContent.set(contentType);
+    });
+
+    effect(() => {
+      const data = this.data();
+      this.src = data;
+    });
+  }
 
   ngAfterViewInit(): void {
     if (this.textarea) {
@@ -69,32 +57,30 @@ export class AnotationsEditorComponent implements AfterViewInit {
     }
   }
 
-  onImageLoadedHandler(data: string | null) {
-    this._data = this.src = data;
+  onImageLoadedHandler(data: string | null | undefined) {
+    this.src = data;
 
     const anotationData = {
-      data: data, contentType: this.contentType,
+      data: data, contentType: this.typeOfContent(),
     };
 
     this.create.emit(anotationData);
   }
 
   onSelectTab(data: ITabSelect) {
-    this.contentType = data.index === 0 ? AnotationContentType.TEXT : AnotationContentType.IMAGE;
-
-    this._cdr.detectChanges();
+    this.typeOfContent.set(data.index === 0 ? AnotationContentType.TEXT : AnotationContentType.IMAGE);
   }
 
   onCreateHandler() {
     const anotationData = {
-      data: this.data, contentType: this.contentType,
+      data: this.src, contentType: this.typeOfContent(),
     };
 
     this.create.emit(anotationData);
   }
 
   onAutoComplete() {
-    if (this._contentType === AnotationContentType.IMAGE) {
+    if (this.contentType() === AnotationContentType.IMAGE) {
       return;
     }
 
@@ -102,13 +88,11 @@ export class AnotationsEditorComponent implements AfterViewInit {
   }
 
   onEditingComplete(emitOnlyText = false) {
-    this._data = this.src;
-
-    if (!this.data || this.data === '') {
+    if (!this.src || this.src === '') {
       return;
     }
 
-    if (!emitOnlyText || (emitOnlyText && this._contentType === AnotationContentType.TEXT)) {
+    if (!emitOnlyText || (emitOnlyText && this.typeOfContent() === AnotationContentType.TEXT)) {
       this.onCreateHandler();
     }
   }

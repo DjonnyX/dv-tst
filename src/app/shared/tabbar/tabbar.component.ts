@@ -1,5 +1,7 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, computed, effect, input, output, signal } from '@angular/core';
 import { ITab, ITabSelect } from './models';
+
+const DEFAULT_SELECTED_INDEX = 0;
 
 @Component({
   selector: 'dv-tabbar',
@@ -8,19 +10,22 @@ import { ITab, ITabSelect } from './models';
   styleUrl: './tabbar.component.scss'
 })
 export class TabbarComponent {
-  @Input()
-  items: Array<ITab> | null | undefined;
+  items = input.required<Array<ITab> | null>();
 
-  @Input()
-  selectedIndex: number = 0;
+  selectedIndex = input<number>(DEFAULT_SELECTED_INDEX);
 
-  @Output()
-  select = new EventEmitter<ITabSelect>();
+  selected = signal<number>(DEFAULT_SELECTED_INDEX);
+
+  select = output<ITabSelect>();
+
+  constructor() {
+    effect(() => this.selected.set(this.selectedIndex()));
+  }
 
   onSelectHandler(e: MouseEvent, index: number, item: ITab) {
     e.stopImmediatePropagation();
 
-    this.selectedIndex = index;
+    this.selected.set(index);
     this.select.emit({ index, item });
   }
 }

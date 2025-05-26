@@ -1,9 +1,13 @@
 <div class="wrapper">
+    @let doc = document();
+    @let number = pageNumber();
+    @let loading = isLoading();
+    @let image = pageImage();
     <div class="top-bar">
         <div>
-            <h1 class="title">{{document?.name}}</h1>
+            <h1 class="title">{{doc?.name}}</h1>
             <div class="list">
-                <dv-document-viewer-page-list [selected]="pageNumber$ | async" [pages]="document?.pages"
+                <dv-document-viewer-page-list [selected]="number" [pages]="doc?.pages"
                     (select)="onSelectHandler($event)" />
             </div>
         </div>
@@ -18,9 +22,9 @@
         </div>
     </div>
     <div class="viewer">
-        <div class="loading-indicator" *ngIf="isLoading$ | async">
+        <div class="loading-indicator" *ngIf="loading">
             <dv-spinner />
         </div>
-        <dv-image-viewer [data]="pageImage$ | async" />
+        <dv-image-viewer [data]="image" />
     </div>
 </div>

@@ -1,7 +1,7 @@
-import { Component, DestroyRef, ElementRef, EventEmitter, Input, Output, ViewChild } from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { Component, DestroyRef, effect, ElementRef, input, output, signal, ViewChild } from '@angular/core';
+import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import { file2Base64 } from '@shared/utils';
-import { BehaviorSubject, catchError, from } from 'rxjs';
+import { catchError, filter, finalize, from, switchMap, tap } from 'rxjs';
 
 @Component({
   selector: 'dv-anotation-image-editor',
@@ -13,31 +13,55 @@ export class AnotationImageEditorComponent {
   @ViewChild('imagePicker')
   imagePicker: ElementRef<HTMLInputElement> | undefined;
 
-  @Input()
-  src: string | null | undefined;
+  src = input<string | null | undefined>(undefined);
 
-  @Output()
-  loaded = new EventEmitter<string | null>();
+  data = signal<string | null | undefined>(undefined);
+
+  loaded = output<string | null | undefined>();
+
+  file = signal<File | undefined>(undefined);
 
   error: boolean = false;
 
-  private _isLoading$ = new BehaviorSubject<boolean>(false);
-  isLoading$ = this._isLoading$.asObservable();
+  isLoading = signal<boolean>(false);
 
-  constructor(private _destroyRef: DestroyRef) { }
+  constructor(private _destroyRef: DestroyRef) {
+    const effectRef = effect(() => {
+      const src = this.src();
 
-  private _load(file: File) {
-    from(file2Base64(file)).pipe(
-      takeUntilDestroyed(this._destroyRef),
-      catchError(err => {
-        this.error = true;
-        throw err;
+      this.data.set(src);
+
+      effectRef.destroy();
+    }, { manualCleanup: true });
+
+    effect(() => {
+      const d = this.data;
+      this.error = false;
+    });
+
+    const file$ = toObservable(this.file);
+
+    file$.pipe(
+      filter(v => !!v),
+      tap(() => {
+        this.isLoading.set(true);
+      }),
+      switchMap(file => {
+        return from(file2Base64(file)).pipe(
+          takeUntilDestroyed(this._destroyRef),
+          catchError(err => {
+            this.error = true;
+            throw err;
+          })
+        )
+      }),
+      finalize(() => {
+        this.isLoading.set(false);
       })
     ).subscribe(v => {
-      this.src = v;
-      this.error = false;
+      this.data.set(v);
 
-      this.loaded.next(this.src);
+      this.loaded.emit(v);
     });
   }
 
@@ -68,7 +92,7 @@ export class AnotationImageEditorComponent {
       const file = this.imagePicker.nativeElement.files[0];
 
       if (file) {
-        this._load(file);
+        this.file.set(file);
       }
 
       this.clearPicker();

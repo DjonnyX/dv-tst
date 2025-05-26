@@ -1,12 +1,13 @@
 <div class="wrapper" #host>
-    @let metriks = metriks$ | async;
+    @let m = metriks();
+    @let b = bounds();
     <ng-container>
-        <dv-scroll-bar #scrollbarX class="scrollbar" [scrollSize]="metriks?.scrollWidth ?? 0"
-            [enabled]="metriks?.enabledScrollX ?? false" [size]="(bounds$ | async)?.width ?? 0"
+        <dv-scroll-bar #scrollbarX class="scrollbar" [scrollSize]="m?.scrollWidth ?? 0"
+            [enabled]="m?.enabledScrollX ?? false" [size]="b?.width ?? 0"
             (scroll)="onScrollBarHScrollHandler($event)"></dv-scroll-bar>
         <div class="container">
-            <dv-scroll-bar #scrollbarY class="scrollbar" [scrollSize]="metriks?.scrollHeight ?? 0"
-                [enabled]="metriks?.enabledScrollY ?? false" [size]="(bounds$ | async)?.height ?? 0"
+            <dv-scroll-bar #scrollbarY class="scrollbar" [scrollSize]="m?.scrollHeight ?? 0"
+                [enabled]="m?.enabledScrollY ?? false" [size]="b?.height ?? 0"
                 (scroll)="onScrollBarVScrollHandler($event)" direction="vertical"></dv-scroll-bar>
             <div class="viewport">
                 <div class="canvas-container">

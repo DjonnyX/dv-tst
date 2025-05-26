@@ -1,5 +1,5 @@
 import { CdkDragMove } from '@angular/cdk/drag-drop';
-import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, OnDestroy, Output } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, input, OnDestroy, output } from '@angular/core';
 import { ScrollBarDirection } from './enums';
 
 @Component({
@@ -10,40 +10,15 @@ import { ScrollBarDirection } from './enums';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ScrollBarComponent implements AfterViewInit, OnDestroy {
-  @Input()
-  size: number = 0;
+  size = input<number>(0);
 
-private _enabled: boolean = false;
-  @Input()
-  set enabled(v: boolean) {
-    if (this._enabled === v) {
-      return;
-    }
-    this._enabled = v;
-  }
-  get enabled() {
-    return this._enabled;
-  }
+  enabled = input<boolean>(false);
 
-  @Input()
-  direction: ScrollBarDirection | string = ScrollBarDirection.HORIZONTAL;
+  direction = input<ScrollBarDirection | string>(ScrollBarDirection.HORIZONTAL)
 
-  private _scrollSize: number = 0;
-  @Input()
-  set scrollSize(v: number) {
-    if (this._scrollSize === v) {
-      return;
-    }
-    this._scrollSize = v;
+  scrollSize = input<number>(0);
 
-    this.resize();
-  }
-  get scrollSize() {
-    return this._scrollSize;
-  }
-
-  @Output()
-  scroll = new EventEmitter<number>();
+  scroll = output<number>();
 
   private _resizeHandler = () => {
     this.resize();
@@ -62,7 +37,7 @@ private _enabled: boolean = false;
   }
 
   onMoveHandler(event: CdkDragMove) {
-    this.scroll.emit((this.direction === 'horizontal' ? event.distance.x : event.distance.y) / (this.size - this._scrollSize * this.size));
+    this.scroll.emit((this.direction() === 'horizontal' ? event.distance.x : event.distance.y) / (this.size() - this.scrollSize() * this.size()));
   }
 
   ngOnDestroy(): void {

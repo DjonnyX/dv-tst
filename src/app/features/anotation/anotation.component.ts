@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input, OnInit, output, signal } from '@angular/core';
 import { AnotationMode } from '@entities/anotation/enums';
 import { IAnotation } from '@entities/document-viewer/models';
 
@@ -10,120 +10,53 @@ import { IAnotation } from '@entities/document-viewer/models';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AnotationComponent implements OnInit {
-  @Input()
-  index: number = -1;
+  index = input<number>(-1);
 
-  private _mode: AnotationMode | string = AnotationMode.SAVED;
-  @Input()
-  set mode(v: AnotationMode | string) {
-    if (this._mode === v) {
-      return;
-    }
+  mode = input<AnotationMode | string>(AnotationMode.SAVED);
 
-    this._mode = v;
+  data = input.required<IAnotation>();
 
-    this._cdr.markForCheck();
-  }
-  get mode() {
-    return this._mode;
-  }
+  color = input.required<string>();
 
-  private _data!: IAnotation;
-  @Input()
-  set data(v: IAnotation) {
-    if (this._data === v) {
-      return;
-    }
+  isEdit = input<boolean>(false);
 
-    this._data = v;
+  editing = signal<boolean>(false);
 
-    this._cdr.markForCheck();
-  }
-  get data() {
-    return this._data;
-  }
+  zoom = input<number>(1);
 
-  private _color!: string;
-  @Input()
-  set color(v: string) {
-    if (this._color === v) {
-      return;
-    }
+  create = output<IAnotation>();
 
-    this._color = v;
+  edit = output<IAnotation>();
 
-    this._cdr.markForCheck();
-  }
-  get color() {
-    return this._color;
-  }
+  delete = output<IAnotation>();
 
-  private _isEdit = false;
-  @Input()
-  set isEdit(v: boolean) {
-    if (this._isEdit === v) {
-      return;
-    }
-
-    this._isEdit = v;
-
-    this._cdr.markForCheck();
-  }
-  get isEdit() {
-    return this._isEdit;
-  }
-
-  private _zoom: number = 1;
-  @Input()
-  set zoom(v: number) {
-    if (this._zoom === v) {
-      return;
-    }
-
-    this._zoom = v;
-
-    this._cdr.markForCheck();
-  }
-  get zoom() {
-    return this._zoom;
-  }
-
-  @Output()
-  create = new EventEmitter<IAnotation>();
-
-  @Output()
-  edit = new EventEmitter<IAnotation>();
-
-  @Output()
-  delete = new EventEmitter<IAnotation>();
-
-  constructor(private _cdr: ChangeDetectorRef) {}
+  constructor() { }
 
   ngOnInit() {
-    this.isEdit = this._mode === AnotationMode.NEW;
+    this.editing.set(this.mode() === AnotationMode.NEW);
   }
 
   onCreateHandler(data: Omit<IAnotation, 'x' | 'y'>) {
     const anotationData = {
-      ...this._data,
+      ...this.data(),
       ...data,
     };
-    if (this._mode === AnotationMode.NEW) {
+    if (this.mode() === AnotationMode.NEW) {
       this.create.emit(anotationData);
     } else {
-      this._isEdit = false;
+      this.editing.set(false);
 
       this.edit.emit(anotationData);
     }
   }
 
   onEditHandler() {
-    this._isEdit = true;
+    this.editing.set(true);
 
-    this.edit.emit(this._data);
+    this.edit.emit(this.data());
   }
 
   onDeleteHandler() {
-    this.delete.emit(this._data);
+    this.delete.emit(this.data());
   }
 }
