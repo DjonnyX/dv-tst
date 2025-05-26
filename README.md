@@ -1,5 +1,7 @@
 # DocViewer
 ## v.0.0.1
+[Версия на хуках].
+[Без хуков см. ветку https://github.com/DjonnyX/dv-tst/tree/without-hooks]
 
 Demo: https://dv-tst.eugene-grebennikov.pro
 
