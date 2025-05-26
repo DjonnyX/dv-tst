@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, Input, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, effect, ElementRef, input, Input, ViewChild } from '@angular/core';
 import { IMetrix } from './models/metrix.model';
 
 @Component({
@@ -11,17 +11,7 @@ export class ScrollAreaComponent implements AfterViewInit {
   @ViewChild('overlay')
   overlay: ElementRef<HTMLDivElement> | undefined;
 
-  private _metrix: IMetrix | null | undefined;
-  @Input()
-  set metrix(v: IMetrix | null | undefined) {
-    if (this._metrix === v) {
-      return;
-    }
-
-    this._metrix = v;
-
-    this._resize();
-  }
+  metrix = input<IMetrix | null | undefined>();
 
   contentWidth: number = 0;
 
@@ -31,14 +21,25 @@ export class ScrollAreaComponent implements AfterViewInit {
 
   boundingHeight: number = window.innerHeight;
 
+  constructor() {
+    effect(() => {
+      const m = this.metrix();
+      this._resize(m);
+    })
+  }
+
   ngAfterViewInit(): void {
     // this.overlay?.nativeElement = contentWidth;
   }
 
-  private _resize() {
-    this.contentWidth = this._metrix?.contentWidth ?? 0;
-    this.contentHeight = this._metrix?.contentWidth ?? 0;
-    this.boundingWidth = this._metrix?.width ?? 0;
-    this.boundingHeight = this._metrix?.height ?? 0;
+  private _resize(metrix: IMetrix | null | undefined) {
+    if (!metrix) {
+      return;
+    }
+
+    this.contentWidth = metrix.contentWidth ?? 0;
+    this.contentHeight = metrix.contentWidth ?? 0;
+    this.boundingWidth = metrix.width ?? 0;
+    this.boundingHeight = metrix.height ?? 0;
   }
 }

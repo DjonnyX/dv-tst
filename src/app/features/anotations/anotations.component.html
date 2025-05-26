@@ -1,12 +1,14 @@
-<div class="container" [ngStyle]="{'width.px': contentBounds.width, 'height.px': contentBounds.height}">
+@let bounds = contentBounds();
+@let scale = zoom();
+<div class="container" [ngStyle]="{'width.px': bounds.width, 'height.px': bounds.height}">
     <ng-container *ngFor="let anotation of anotations; let index = index">
-        <dv-anotation class="anotation" [index]="index" [color]="getColor(index)" [zoom]="zoom" [data]="anotation"
+        <dv-anotation class="anotation" [index]="index" [color]="getColor(index)" [zoom]="scale" [data]="anotation"
             (edit)="onEditHandler(index, $event)" (delete)="onDeleteHandler(index, $event)"
             (cdkDragEnded)="onDropHandler(index, $event)" cdkDrag></dv-anotation>
     </ng-container>
 
     <ng-container *ngIf="newAnotation">
-        <dv-anotation class="anotation" mode="new" [color]="getColor(anotations.length)" [zoom]="zoom"
+        <dv-anotation class="anotation" mode="new" [color]="getColor(anotations.length)" [zoom]="scale"
             [data]="newAnotation" (create)="onCreateHandler(-1, $event)" (edit)="onEditHandler(-1, $event)"
             (delete)="onDeleteNewAnotationHandler()" (cdkDragEnded)="onDropHandler(-1, $event);" cdkDrag></dv-anotation>
     </ng-container>

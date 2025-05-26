@@ -1,4 +1,5 @@
-<div class="anotation" [ngStyle]="{'background-color': color}" (click)="onEditingComplete(true)">
+@let contentType = typeOfContent();
+<div class="anotation" [ngStyle]="{'background-color': color()}" (click)="onEditingComplete(true)">
     <div class="content">
         <ng-container *ngIf="contentType === 'text'; else image">
             <textarea autofocus #textarea class="textarea"

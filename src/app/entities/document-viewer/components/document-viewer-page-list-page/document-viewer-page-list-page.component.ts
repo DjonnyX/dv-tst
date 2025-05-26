@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, input } from '@angular/core';
 
 @Component({
   selector: 'dv-document-viewer-page-list-page',
@@ -7,9 +7,7 @@ import { Component, Input } from '@angular/core';
   styleUrl: './document-viewer-page-list-page.component.scss'
 })
 export class DocumentViewerPageListPageComponent {
-  @Input()
-  number: number | undefined;
+  number = input<number | undefined>();
 
-  @Input()
-  selected: boolean = false;
+  selected = input<boolean>(false);
 }

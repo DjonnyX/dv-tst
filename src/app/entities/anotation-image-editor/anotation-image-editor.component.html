@@ -1,16 +1,18 @@
+@let content = data();
+@let loading = isLoading();
 <div class="container">
-    <ng-container *ngIf="!src || error; else image">
+    <ng-container *ngIf="!content || error; else image">
         <div class="image" (click)="onSelectImageHandler($event)">
             <dv-image-empty></dv-image-empty>
         </div>
     </ng-container>
 
     <ng-template #image>
-        <div *ngIf="src" class="image" (click)="onSelectImageHandler($event)">
-            <img [src]="src" (error)="onImageLoadingErrorHandler()" />
+        <div *ngIf="content" class="image" (click)="onSelectImageHandler($event)">
+            <img [src]="content" (error)="onImageLoadingErrorHandler()" />
         </div>
     </ng-template>
-    <div class="loading-indicator" *ngIf="isLoading$ | async">
+    <div class="loading-indicator" *ngIf="loading">
         <dv-spinner></dv-spinner>
     </div>
 </div>
