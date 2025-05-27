@@ -84,7 +84,7 @@ export class AnotationsEditorComponent implements AfterViewInit {
       return;
     }
 
-    this.onEditingComplete();
+    // etc
   }
 
   onEditingComplete(emitOnlyText = false) {
