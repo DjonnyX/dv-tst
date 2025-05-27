@@ -1,7 +1,6 @@
 <div class="wrapper">
     @let doc = document();
     @let number = pageNumber();
-    @let loading = isLoading();
     @let image = pageImage();
     <div class="top-bar">
         <div>
@@ -22,9 +21,11 @@
         </div>
     </div>
     <div class="viewer">
-        <div class="loading-indicator" *ngIf="loading">
+        @if (isLoading()) {
+        <div class="loading-indicator">
             <dv-spinner />
         </div>
+        }
         <dv-image-viewer [data]="image" />
     </div>
 </div>

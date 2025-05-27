@@ -1,19 +1,15 @@
 @let content = data();
 @let scale = zoom();
-@let edit = editing();
+@let isEdit = editing() === true;
 @let i = index();
 @let m = mode();
 @let c = color();
 <div class="container" [ngStyle]="{'left.px': content.x * scale, 'top.px': content.y * scale}">
-    <ng-container *ngIf="edit === true; else preview">
-        <dv-anotations-editor [index]="i" [mode]="m" [color]="c" [data]="content.data"
-            [contentType]="content.contentType" (create)="onCreateHandler($event)" (edit)="onEditHandler()"
-            (delete)="onDeleteHandler()"></dv-anotations-editor>
-    </ng-container>
-
-    <ng-template #preview>
-        <dv-anotation-entity [index]="i" [mode]="m" [color]="c" [data]="content.data"
-            [contentType]="content.contentType" (edit)="onEditHandler()"
-            (delete)="onDeleteHandler()"></dv-anotation-entity>
-    </ng-template>
+    @if(isEdit) {
+    <dv-anotations-editor [index]="i" [mode]="m" [color]="c" [data]="content.data" [contentType]="content.contentType"
+        (create)="onCreateHandler($event)" (edit)="onEditHandler()" (delete)="onDeleteHandler()"></dv-anotations-editor>
+    } @else {
+    <dv-anotation-entity [index]="i" [mode]="m" [color]="c" [data]="content.data" [contentType]="content.contentType"
+        (edit)="onEditHandler()" (delete)="onDeleteHandler()"></dv-anotation-entity>
+    }
 </div>

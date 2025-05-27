@@ -1,7 +1,9 @@
 @let list = pageList();
 @let num = number();
 <ul class="list">
-    <li class="item" *ngFor="let page of list" (click)="onClickHandler(page.number)">
+    @for (page of list; track page.number) {
+    <li class="item" (click)="onClickHandler(page.number)">
         <dv-document-viewer-page-list-page [number]="page.number" [selected]="page.number === num" />
     </li>
+    }
 </ul>

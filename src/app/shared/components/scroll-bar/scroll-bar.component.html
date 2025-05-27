@@ -1,6 +1,9 @@
-<div class="track" *ngIf="enabled()" [class.vertical]="direction() === 'vertical'">
-    <div class="thumb"
-        [ngStyle]="{'width.px': direction() === 'vertical' ? 6 : scrollSize() * size(), 'height.px': direction() === 'vertical' ? scrollSize() * size() : 6}"
-        [cdkDragLockAxis]="direction() === 'vertical'?'y':'x'" cdkDragBoundary=".track" cdkDrag
-        (cdkDragMoved)="onMoveHandler($event)"></div>
+@if (enabled()) {
+@let isVertical = direction() === 'vertical';
+@let weight = scrollSize() * size();
+<div class="track" [class.vertical]="isVertical">
+    <div class="thumb" [ngStyle]="{'width.px': isVertical ? 6 : weight, 'height.px': isVertical ? weight : 6}"
+        [cdkDragLockAxis]="isVertical?'y':'x'" cdkDragBoundary=".track" cdkDrag (cdkDragMoved)="onMoveHandler($event)">
+    </div>
 </div>
+}

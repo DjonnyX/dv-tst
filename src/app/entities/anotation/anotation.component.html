@@ -1,18 +1,18 @@
-@let content = data;
-<div class="anotation" [ngStyle]="{'background-color': color}">
+@let content = data();
+@let isTextContent = contentType() === 'text';
+<div class="anotation" [ngStyle]="{'background-color': color()}">
     <div class="content">
-        <ng-container *ngIf="contentType() === 'text'; else image">
-            <p class="description" (click)="onEditHandler($event)">{{content()}}</p>
-        </ng-container>
-
-        <ng-template #image>
-            <div class="image" (click)="onEditHandler($event)">
-                <img *ngIf="!!content; else emptyImage" [src]="content()" />
-            </div>
-            <ng-template #emptyImage>
-                <dv-image-empty (click)="onEditHandler($event)"></dv-image-empty>
-            </ng-template>
-        </ng-template>
+        @if (isTextContent) {
+        <p class="description" (click)="onEditHandler($event)">{{content}}</p>
+        } @else {
+        <div class="image" (click)="onEditHandler($event)">
+            @if (!!content) {
+            <img [src]="content" />
+            } @else {
+            <dv-image-empty (click)="onEditHandler($event)"></dv-image-empty>
+            }
+        </div>
+        }
     </div>
     <div class="controls">
         <button class="delete-button" (click)="onDeleteHandler()">

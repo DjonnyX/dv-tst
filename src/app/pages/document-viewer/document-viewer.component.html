@@ -1,11 +1,11 @@
 <div class="page">
     <div class="container">
-        <div class="loading-indicator" *ngIf="isLoading(); else doc">
+        @if (isLoading()) {
+        <div class="loading-indicator">
             <dv-spinner />
         </div>
-
-        <ng-template #doc>
-            <dv-document-viewer-widget [document]="document()" />
-        </ng-template>
+        } @else {
+        <dv-document-viewer-widget [document]="document()" />
+        }
     </div>
 </div>

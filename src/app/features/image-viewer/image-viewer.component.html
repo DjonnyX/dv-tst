@@ -1,30 +1,33 @@
 <div class="wrapper" #host>
     @let m = metriks();
     @let b = bounds();
-    <ng-container>
-        <dv-scroll-bar #scrollbarX class="scrollbar" [scrollSize]="m?.scrollWidth ?? 0"
-            [enabled]="m?.enabledScrollX ?? false" [size]="b?.width ?? 0"
-            (scroll)="onScrollBarHScrollHandler($event)"></dv-scroll-bar>
-        <div class="container">
-            <dv-scroll-bar #scrollbarY class="scrollbar" [scrollSize]="m?.scrollHeight ?? 0"
-                [enabled]="m?.enabledScrollY ?? false" [size]="b?.height ?? 0"
-                (scroll)="onScrollBarVScrollHandler($event)" direction="vertical"></dv-scroll-bar>
-            <div class="viewport">
-                <div class="canvas-container">
-                    <canvas #canvas class="canvas" (click)="onClickToCanvasHandler($event)"></canvas>
-                    <div #overlay class="overlay">
-                        <dv-anotations *ngIf="!!contentBounds" [zoom]="scale"
-                            [contentBounds]="contentBounds"></dv-anotations>
-                    </div>
-                    <div class="zoom">
-                        <p>{{zoom}}</p>
-                        <div class="controls">
-                            <button (click)="onZoomOutHandler()">-</button>
-                            <button (click)="onZoomInHandler()">+</button>
-                        </div>
+    @let enabledScrollX = m?.enabledScrollX ?? false;
+    @let enabledScrollY = m?.enabledScrollY ?? false;
+    @let scrollSizeX = m?.scrollWidth ?? 0;
+    @let scrollSizeY = m?.scrollHeight ?? 0;
+    @let trackSizeX = b?.width ?? 0;
+    @let trackSizeY = b?.height ?? 0;
+    <dv-scroll-bar #scrollbarX class="scrollbar" [scrollSize]="scrollSizeX" [enabled]="enabledScrollX"
+        [size]="trackSizeX" (scroll)="onScrollBarHScrollHandler($event)"></dv-scroll-bar>
+    <div class="container">
+        <dv-scroll-bar #scrollbarY class="scrollbar" [scrollSize]="scrollSizeY" [enabled]="enabledScrollY"
+            [size]="trackSizeY" (scroll)="onScrollBarVScrollHandler($event)" direction="vertical"></dv-scroll-bar>
+        <div class="viewport">
+            <div class="canvas-container">
+                <canvas #canvas class="canvas" (click)="onClickToCanvasHandler($event)"></canvas>
+                <div #overlay class="overlay">
+                    @if (!!contentBounds) {
+                    <dv-anotations [zoom]="scale" [contentBounds]="contentBounds"></dv-anotations>
+                    }
+                </div>
+                <div class="zoom">
+                    <p>{{zoom}}</p>
+                    <div class="controls">
+                        <button (click)="onZoomOutHandler()">-</button>
+                        <button (click)="onZoomInHandler()">+</button>
                     </div>
                 </div>
             </div>
         </div>
-    </ng-container>
+    </div>
 </div>

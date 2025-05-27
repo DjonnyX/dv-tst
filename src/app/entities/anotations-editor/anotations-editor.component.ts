@@ -1,4 +1,4 @@
-import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, effect, ElementRef, EventEmitter, input, Input, output, Output, signal, ViewChild } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, Component, effect, ElementRef, input, output, signal, ViewChild } from '@angular/core';
 import { COLORS } from '@entities/anotation/const';
 import { TABS } from '@entities/anotation/const/tabs';
 import { AnotationMode } from '@entities/anotation/enums';
@@ -39,7 +39,7 @@ export class AnotationsEditorComponent implements AfterViewInit {
 
   tabs: Array<ITab> = TABS;
 
-  constructor(private _cdr: ChangeDetectorRef) {
+  constructor() {
     effect(() => {
       const contentType = this.contentType();
       this.typeOfContent.set(contentType);

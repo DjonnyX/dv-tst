@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, DestroyRef, OnInit, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, inject, OnInit, signal } from '@angular/core';
 import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import { ActivatedRoute } from '@angular/router';
 import { DocumentViewerService } from '@features/document-viewer/document-viewer.service';
@@ -19,7 +19,13 @@ export class DocumentViewerComponent implements OnInit {
 
   isLoading = signal<boolean>(true);
 
-  constructor(private _route: ActivatedRoute, private _service: DocumentViewerService, private _destroyRef: DestroyRef) {
+  private _route = inject(ActivatedRoute);
+
+  private _service = inject(DocumentViewerService);
+
+  private _destroyRef = inject(DestroyRef);
+
+  constructor() {
     const documentId$ = toObservable(this.documentId);
 
     documentId$.pipe(

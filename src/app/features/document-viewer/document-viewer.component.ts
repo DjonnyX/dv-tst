@@ -1,4 +1,4 @@
-import { Component, effect, input, output, signal } from '@angular/core';
+import { Component, effect, inject, input, output, signal } from '@angular/core';
 import { IDocumentModel } from '@entities/document-viewer/models';
 import { DocumentViewerService } from './document-viewer.service';
 import { finalize, switchMap, tap } from 'rxjs';
@@ -24,7 +24,11 @@ export class DocumentViewerComponent {
 
   select = output<number>();
 
-  constructor(private _service: DocumentViewerService, private _anotationsService: AnotationsService) {
+  private _service = inject(DocumentViewerService);
+
+  private _anotationsService = inject(AnotationsService);
+
+  constructor() {
     effect(() => {
       const pageNumber = this.pageNumber();
       this.isLoading.set(true);

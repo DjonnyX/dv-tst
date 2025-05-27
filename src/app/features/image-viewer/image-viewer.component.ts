@@ -1,4 +1,4 @@
-import { AfterViewInit, ChangeDetectionStrategy, Component, effect, ElementRef, input, OnDestroy, signal, ViewChild } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, Component, effect, ElementRef, inject, input, OnDestroy, signal, ViewChild } from '@angular/core';
 import { IMetriks } from './models/metriks.model';
 import { ScrollBarComponent } from '@shared/components/scroll-bar/scroll-bar.component';
 import { AnotationsService } from '@features/anotations/anotations.service';
@@ -61,7 +61,9 @@ export class ImageViewerComponent implements AfterViewInit, OnDestroy {
     this._resize();
   }
 
-  constructor(private _anotationsService: AnotationsService) {
+  private _anotationsService = inject(AnotationsService);
+
+  constructor() {
     effect(() => {
       const m = this.metriks();
 

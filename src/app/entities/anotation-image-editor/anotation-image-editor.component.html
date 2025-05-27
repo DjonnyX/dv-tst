@@ -1,20 +1,19 @@
 @let content = data();
-@let loading = isLoading();
 <div class="container">
-    <ng-container *ngIf="!content || error; else image">
-        <div class="image" (click)="onSelectImageHandler($event)">
-            <dv-image-empty></dv-image-empty>
-        </div>
-    </ng-container>
-
-    <ng-template #image>
-        <div *ngIf="content" class="image" (click)="onSelectImageHandler($event)">
-            <img [src]="content" (error)="onImageLoadingErrorHandler()" />
-        </div>
-    </ng-template>
-    <div class="loading-indicator" *ngIf="loading">
+    @if (!content || error) {
+    <div class="image" (click)="onSelectImageHandler($event)">
+        <dv-image-empty></dv-image-empty>
+    </div>
+    } @else if(content) {
+    <div class="image" (click)="onSelectImageHandler($event)">
+        <img [src]="content" (error)="onImageLoadingErrorHandler()" />
+    </div>
+    }
+    @if (isLoading()) {
+    <div class="loading-indicator">
         <dv-spinner></dv-spinner>
     </div>
+    }
 </div>
 
 <input #imagePicker class="image-picker" type="file" accept="image/png, image/jpeg"

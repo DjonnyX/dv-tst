@@ -1,5 +1,4 @@
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
-import { DocumentViewerService } from '@features/document-viewer/document-viewer.service';
+import { ChangeDetectionStrategy, Component, inject, input, Input } from '@angular/core';
 import { IDocumentModel } from '@entities/document-viewer/models';
 
 @Component({
@@ -10,8 +9,7 @@ import { IDocumentModel } from '@entities/document-viewer/models';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DocumentViewerComponent {
-  @Input()
-  document: IDocumentModel | null | undefined;
+  document = input<IDocumentModel | null | undefined>(undefined);
 
-  constructor(private _service: DocumentViewerService) { }
+  constructor() { }
 }

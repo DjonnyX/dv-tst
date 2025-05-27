@@ -1,4 +1,4 @@
-import { Component, DestroyRef, effect, ElementRef, input, output, signal, ViewChild } from '@angular/core';
+import { Component, DestroyRef, effect, ElementRef, inject, input, output, signal, ViewChild } from '@angular/core';
 import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import { file2Base64 } from '@shared/utils';
 import { catchError, filter, finalize, from, switchMap, tap } from 'rxjs';
@@ -25,7 +25,9 @@ export class AnotationImageEditorComponent {
 
   isLoading = signal<boolean>(false);
 
-  constructor(private _destroyRef: DestroyRef) {
+  private _destroyRef = inject(DestroyRef);
+
+  constructor() {
     const effectRef = effect(() => {
       const src = this.src();
 

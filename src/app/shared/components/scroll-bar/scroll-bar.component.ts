@@ -1,5 +1,5 @@
 import { CdkDragMove } from '@angular/cdk/drag-drop';
-import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, input, OnDestroy, output } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, input, OnDestroy, output } from '@angular/core';
 import { ScrollBarDirection } from './enums';
 
 @Component({
@@ -24,7 +24,9 @@ export class ScrollBarComponent implements AfterViewInit, OnDestroy {
     this.resize();
   }
 
-  constructor(private _cdr: ChangeDetectorRef) { }
+  private _cdr = inject(ChangeDetectorRef);
+
+  constructor() { }
 
   ngAfterViewInit(): void {
     window.addEventListener('resize', this._resizeHandler);

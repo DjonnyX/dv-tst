@@ -1,15 +1,14 @@
 @let contentType = typeOfContent();
+@let isTextContent = contentType === 'text';
 <div class="anotation" [ngStyle]="{'background-color': color()}" (click)="onEditingComplete(true)">
     <div class="content">
-        <ng-container *ngIf="contentType === 'text'; else image">
-            <textarea autofocus #textarea class="textarea"
-                placeholder="Чтобы начать редактирование, переведите поле в фокус. Чтобы завершить редактирование, выведите поле из фокуса"
-                [(ngModel)]="src" (click)="onTextAreaClickHandler($event)" (blur)="onAutoComplete()"></textarea>
-        </ng-container>
-
-        <ng-template #image>
-            <dv-anotation-image-editor [src]="src" (loaded)="onImageLoadedHandler($event)"></dv-anotation-image-editor>
-        </ng-template>
+        @if (isTextContent) {
+        <textarea autofocus #textarea class="textarea"
+            placeholder="Чтобы начать редактирование, переведите поле в фокус. Чтобы завершить редактирование, выведите поле из фокуса"
+            [(ngModel)]="src" (click)="onTextAreaClickHandler($event)" (blur)="onAutoComplete()"></textarea>
+        } @else {
+        <dv-anotation-image-editor [src]="src" (loaded)="onImageLoadedHandler($event)"></dv-anotation-image-editor>
+        }
     </div>
     <div class="controls">
         <button class="delete-button" (click)="onDeleteHandler()">
@@ -19,12 +18,14 @@
                 </path>
             </svg>
         </button>
-        <button *ngIf="!!src && src !== ''" class="create-button" (click)="onEditingComplete()">
+        @if(!!src && src !== '') {
+        <button class="create-button" (click)="onEditingComplete()">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="16px" height="16px">
                 <path fill="#118325"
                     d="M53.7 20.523 28.455 50.815a1 1 0 0 1-1.438.1L10.523 36.073a1 1 0 0 1-.062-1.426l5.379-5.758a1 1 0 0 1 1.388-.071l9.194 8.018L47.166 13.26a1 1 0 0 1 1.516.017l5.018 5.962a1 1 0 0 1 0 1.284Z" />
             </svg>
         </button>
+        }
     </div>
     <dv-tabbar [items]="tabs" [selectedIndex]="contentType === 'text' ? 0 : 1"
         (select)="onSelectTab($event)"></dv-tabbar>

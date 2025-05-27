@@ -1,4 +1,4 @@
-import { Component, signal } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { NavigationCancel, NavigationEnd, NavigationError, NavigationStart, Router } from '@angular/router';
 import { filter, tap } from 'rxjs';
 import { IsLoadingService } from '../../shared/services/is-loading.service';
@@ -13,10 +13,11 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 export class PageLoadingIndicatorComponent {
   isLoading = signal<boolean>(false);
 
-  constructor(
-    private _isLoadingService: IsLoadingService,
-    private _router: Router,
-  ) {
+  private _isLoadingService = inject(IsLoadingService);
+
+  private _router = inject(Router);
+
+  constructor() {
     this._isLoadingService.isLoading$().pipe(
       tap(v => {
         this.isLoading.set(v);

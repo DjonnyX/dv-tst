@@ -1,4 +1,4 @@
-import { Component, EventEmitter, input, Input, output, Output } from '@angular/core';
+import { Component, inject, input, output } from '@angular/core';
 import { AnotationContentType } from '../document-viewer/enums';
 import { AnotationMode } from './enums';
 import { COLORS } from './const';
@@ -27,7 +27,9 @@ export class AnotationComponent {
 
   delete = output<void>();
 
-  constructor(private _service: AnotationsService) {
+  private _service = inject(AnotationsService);
+
+  constructor() {
     this._service.edit$.pipe(
       takeUntilDestroyed(),
       filter(v => {
