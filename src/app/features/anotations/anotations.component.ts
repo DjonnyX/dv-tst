@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, input, signal } from '@angular/core';
 import { AnotationsService } from './anotations.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { IAnotation } from '@entities/document-viewer/models';
@@ -19,29 +19,27 @@ export class AnotationsComponent {
 
   contentBounds = input.required<IRectangle>();
 
-  anotations = new Array<IAnotation>();
+  anotations = signal<Array<IAnotation>>([]);
 
-  newAnotation: IAnotation | null | undefined;
+  newAnotation = signal<IAnotation | null | undefined>(undefined);
 
-  constructor(private _service: AnotationsService, private _cdr: ChangeDetectorRef) {
+  private _service = inject(AnotationsService);
+
+  constructor() {
     this._service.show$.pipe(
       takeUntilDestroyed(),
     ).subscribe(v => {
-      this.anotations = v;
-
-      this._cdr.markForCheck();
+      this.anotations.set(v);
     });
 
     this._service.add$.pipe(
       takeUntilDestroyed(),
     ).subscribe(v => {
-      this.newAnotation = {
+      this.newAnotation.set({
         contentType: AnotationContentType.TEXT,
         data: '',
         ...v
-      };
-
-      this._cdr.markForCheck();
+      });
     });
   }
 
@@ -66,23 +64,21 @@ export class AnotationsComponent {
         ...anotation,
       });
     } else {
-      this._service.create({
-        ...this.anotations[index],
-        ...anotation,
-      });
+      const anotations = this.anotations(),
+        last = {
+          ...anotations[index],
+          ...anotation,
+        };
+      this._service.create(last);
     }
 
-    this.newAnotation = null;
-
-    this._cdr.markForCheck();
+    this.newAnotation.set(null);
   }
 
   onEditHandler(index: number, anotation: IAnotation) {
     this._service.edit(index, anotation);
 
-    this.newAnotation = null;
-
-    this._cdr.markForCheck();
+    this.newAnotation.set(null);
   }
 
   onDeleteHandler(index: number, anotation: IAnotation) {
@@ -90,37 +86,42 @@ export class AnotationsComponent {
   }
 
   onDeleteNewAnotationHandler() {
-    this.newAnotation = null;
-
-    this._cdr.markForCheck();
+    this.newAnotation.set(null);
   }
 
   onDropHandler(index: number, event: CdkDragEnd) {
     const zoom = this.zoom();
     if (index === -1) {
-      const data = this.newAnotation;
+      const data = this.newAnotation();
       if (!data) {
         return;
       }
 
-      this.newAnotation = {
+      this.newAnotation.set({
         ...data,
         x: data.x + event.distance.x / zoom,
         y: data.y + event.distance.y / zoom,
-      };
+      });
     } else {
-      const data = this.anotations[index];
-      if (!data) {
-        return;
-      }
+      this.anotations.update(v => {
+        if (!v) {
+          return v;
+        }
 
-      this.anotations[index] = {
-        ...data,
-        x: data.x + event.distance.x / zoom,
-        y: data.y + event.distance.y / zoom,
-      };
+        const data = v[index];
+        if (!data) {
+          return [];
+        }
+
+        const result = [...v];
+
+        result[index] = {
+          ...data,
+          x: data.x + event.distance.x / zoom,
+          y: data.y + event.distance.y / zoom,
+        };
+        return result;
+      });
     }
-
-    this._cdr.markForCheck();
   }
 }
