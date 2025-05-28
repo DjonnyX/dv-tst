@@ -1,5 +1,6 @@
-import { Component, DestroyRef, effect, ElementRef, inject, input, output, signal, ViewChild } from '@angular/core';
+import { Component, computed, DestroyRef, effect, ElementRef, inject, input, output, Signal, signal, ViewChild } from '@angular/core';
 import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
+import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { file2Base64 } from '@shared/utils';
 import { catchError, filter, finalize, from, switchMap, tap } from 'rxjs';
 
@@ -17,6 +18,8 @@ export class AnotationImageEditorComponent {
 
   data = signal<string | null | undefined>(undefined);
 
+  sanitizedData: Signal<SafeUrl | null>;
+
   loaded = output<string | null | undefined>();
 
   file = signal<File | undefined>(undefined);
@@ -27,7 +30,14 @@ export class AnotationImageEditorComponent {
 
   private _destroyRef = inject(DestroyRef);
 
+  private _sanitizer = inject(DomSanitizer);
+
   constructor() {
+    this.sanitizedData = computed(() => {
+      const data = this.data();
+      return data ? this._sanitizer.bypassSecurityTrustUrl(data) : null;
+    });
+
     const effectRef = effect(() => {
       const src = this.src();
 

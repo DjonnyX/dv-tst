@@ -1,4 +1,4 @@
-@let content = data();
+@let content = sanitizedData();
 <div class="container">
     @if (!content || error) {
     <div class="image" (click)="onSelectImageHandler($event)">

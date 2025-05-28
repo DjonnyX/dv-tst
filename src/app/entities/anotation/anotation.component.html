@@ -1,4 +1,4 @@
-@let content = data();
+@let content = sanitizedData();
 @let isTextContent = contentType() === 'text';
 <div class="anotation" [ngStyle]="{'background-color': color()}">
     <div class="content">

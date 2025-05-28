@@ -1,10 +1,11 @@
-import { Component, inject, input, output } from '@angular/core';
+import { Component, computed, inject, input, output, Signal } from '@angular/core';
 import { AnotationContentType } from '../document-viewer/enums';
 import { AnotationMode } from './enums';
 import { COLORS } from './const';
 import { AnotationsService } from '@features/anotations/anotations.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { filter } from 'rxjs';
+import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 
 @Component({
   selector: 'dv-anotation-entity',
@@ -21,6 +22,8 @@ export class AnotationComponent {
 
   data = input<string | null | undefined>(undefined);
 
+  sanitizedData: Signal<SafeUrl | null>;
+
   color = input<string>(COLORS[0]);
 
   edit = output<AnotationContentType>();
@@ -29,7 +32,14 @@ export class AnotationComponent {
 
   private _service = inject(AnotationsService);
 
+  private _sanitizer = inject(DomSanitizer);
+
   constructor() {
+    this.sanitizedData = computed(() => {
+      const data = this.data();
+      return data ? this._sanitizer.bypassSecurityTrustUrl(data) : null;
+    });
+
     this._service.edit$.pipe(
       takeUntilDestroyed(),
       filter(v => {
