@@ -1,8 +1,9 @@
 # DocViewer
 ## v.0.0.2
+
 [Версия на хуках].
-[Без хуков см. ветку https://github.com/DjonnyX/dv-tst/tree/without-hooks]
-ВАЖНО! В ветке `without-hooks` контент изображений не санитизирован! Возможна `XSS` уязвимость через `textarea`.
+[ ![old-school](https://github.com/user-attachments/assets/709767e0-14d0-46da-9e4a-cc4463a84ba0) Без хуков см. ветку https://github.com/DjonnyX/dv-tst/tree/without-hooks]
+__ВАЖНО!__ _В ветке `without-hooks` контент изображений не санитизирован! Возможна `XSS` уязвимость через `textarea`._
 
 Demo: https://dv-tst.eugene-grebennikov.pro
 
